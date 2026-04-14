@@ -1,93 +1,1478 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Noreen Fatima | AI Portfolio</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio — Your Name</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Outfit:wght@200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --bg-secondary: #12121a;
+    --fg: #f0ede6;
+    --fg-muted: #8a8a9a;
+    --accent: #00e68a;
+    --accent-alt: #00b8d4;
+    --card: rgba(255,255,255,0.03);
+    --card-hover: rgba(255,255,255,0.07);
+    --border: rgba(255,255,255,0.06);
+    --glow: rgba(0,230,138,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
+
+  html {
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent) var(--bg);
+  }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Custom Cursor */
+  .cursor-dot {
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 99999;
+    transition: transform 0.1s;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    width: 40px; height: 40px;
+    border: 1.5px solid var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 99998;
+    transition: width 0.3s, height 0.3s, border-color 0.3s;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring.hover {
+    width: 70px; height: 70px;
+    border-color: var(--accent-alt);
+    background: rgba(0,230,138,0.05);
+  }
+
+  /* Particle Canvas */
+  #particle-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* Gradient Orbs */
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.3;
+    animation: orbFloat 20s ease-in-out infinite;
+    pointer-events: none;
+  }
+  .orb-1 { width: 600px; height: 600px; background: var(--accent); top: -200px; left: -200px; animation-delay: 0s; }
+  .orb-2 { width: 500px; height: 500px; background: var(--accent-alt); bottom: -150px; right: -150px; animation-delay: -7s; }
+  .orb-3 { width: 400px; height: 400px; background: #ff6b35; top: 50%; left: 50%; transform: translate(-50%,-50%); animation-delay: -14s; opacity: 0.15; }
+
+  @keyframes orbFloat {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    25% { transform: translate(60px, -40px) scale(1.1); }
+    50% { transform: translate(-30px, 60px) scale(0.95); }
+    75% { transform: translate(40px, 30px) scale(1.05); }
+  }
+
+  /* Noise Overlay */
+  .noise {
+    position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 128px 128px;
+  }
+
+  /* Navigation */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    padding: 1.2rem 2rem;
+    backdrop-filter: blur(20px);
+    background: rgba(10,10,15,0.7);
+    border-bottom: 1px solid var(--border);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  nav.scrolled { padding: 0.8rem 2rem; background: rgba(10,10,15,0.9); }
+  .nav-link {
+    position: relative; color: var(--fg-muted); text-decoration: none;
+    font-size: 0.85rem; font-weight: 500; letter-spacing: 0.05em;
+    text-transform: uppercase; transition: color 0.3s;
+  }
+  .nav-link::after {
+    content: ''; position: absolute; bottom: -4px; left: 0;
+    width: 0; height: 2px; background: var(--accent);
+    transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .nav-link:hover, .nav-link.active { color: var(--fg); }
+  .nav-link:hover::after, .nav-link.active::after { width: 100%; }
+
+  /* Sections */
+  section {
+    position: relative; z-index: 2;
+    min-height: 100vh; padding: 8rem 2rem;
+  }
+
+  /* Hero Section */
+  .hero-title {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 900; font-size: clamp(3rem, 8vw, 7rem);
+    line-height: 0.95; letter-spacing: -0.03em;
+  }
+  .hero-title .line {
+    display: block; overflow: hidden;
+  }
+  .hero-title .line span {
+    display: inline-block;
+    transform: translateY(110%);
+    animation: slideUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .hero-title .line:nth-child(2) span { animation-delay: 0.15s; }
+  .hero-title .line:nth-child(3) span { animation-delay: 0.3s; }
+
+  @keyframes slideUp {
+    to { transform: translateY(0); }
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, var(--accent), var(--accent-alt), #ff6b35);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 5s ease-in-out infinite;
+  }
+  @keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  /* Typing effect */
+  .typed-text::after {
+    content: '|';
+    animation: blink 0.8s step-end infinite;
+    color: var(--accent);
+    font-weight: 300;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* Magnetic Button */
+  .mag-btn {
+    position: relative; display: inline-flex; align-items: center; gap: 0.75rem;
+    padding: 1rem 2.5rem; border: none; border-radius: 100px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.9rem; font-weight: 600; letter-spacing: 0.05em;
+    text-transform: uppercase; text-decoration: none;
+    color: var(--bg); background: var(--accent);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s;
+    overflow: hidden;
+  }
+  .mag-btn::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--accent-alt), #ff6b35);
+    opacity: 0; transition: opacity 0.4s;
+  }
+  .mag-btn:hover::before { opacity: 1; }
+  .mag-btn:hover {
+    box-shadow: 0 0 40px var(--glow), 0 0 80px rgba(0,230,138,0.1);
+  }
+  .mag-btn span, .mag-btn i { position: relative; z-index: 1; }
+
+  .mag-btn-outline {
+    background: transparent; color: var(--fg);
+    border: 1.5px solid var(--border);
+  }
+  .mag-btn-outline::before {
+    background: var(--card-hover);
+  }
+  .mag-btn-outline:hover { border-color: var(--accent); }
+
+  /* Scroll Indicator */
+  .scroll-indicator {
+    position: absolute; bottom: 3rem; left: 50%;
+    transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+  }
+  .scroll-line {
+    width: 1px; height: 60px; background: var(--border);
+    position: relative; overflow: hidden;
+  }
+  .scroll-line::after {
+    content: ''; position: absolute; top: -100%; left: 0;
+    width: 100%; height: 50%;
+    background: var(--accent);
+    animation: scrollDown 2s ease-in-out infinite;
+  }
+  @keyframes scrollDown {
+    0% { top: -50%; } 100% { top: 150%; }
+  }
+
+  /* Section Headers */
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem; color: var(--accent);
+    letter-spacing: 0.2em; text-transform: uppercase;
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .section-label::before {
+    content: ''; width: 40px; height: 1px; background: var(--accent);
+  }
+  .section-title {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800; font-size: clamp(2rem, 4vw, 3.5rem);
+    line-height: 1.1; letter-spacing: -0.02em;
+  }
+
+  /* Cards */
+  .glass-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative; overflow: hidden;
+  }
+  .glass-card::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(0,230,138,0.04), transparent 40%);
+    pointer-events: none;
+  }
+  .glass-card:hover {
+    border-color: rgba(0,230,138,0.2);
+    transform: translateY(-5px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+
+  /* 3D Tilt */
+  .tilt-card { transform-style: preserve-3d; perspective: 1000px; }
+
+  /* Skill Bars */
+  .skill-bar-track {
+    width: 100%; height: 6px; background: var(--border);
+    border-radius: 3px; overflow: hidden;
+  }
+  .skill-bar-fill {
+    height: 100%; border-radius: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-alt));
+    width: 0; transition: width 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Project Filter */
+  .filter-btn {
+    padding: 0.5rem 1.25rem; border: 1px solid var(--border);
+    border-radius: 100px; background: transparent;
+    color: var(--fg-muted); font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.8rem; font-weight: 500; letter-spacing: 0.05em;
+    text-transform: uppercase; transition: all 0.3s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    background: var(--accent); color: var(--bg);
+    border-color: var(--accent);
+  }
+
+  /* Project Card */
+  .project-card {
+    border-radius: 20px; overflow: hidden;
+    background: var(--card); border: 1px solid var(--border);
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .project-card:hover {
+    border-color: rgba(0,230,138,0.3);
+    transform: translateY(-8px);
+    box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+  }
+  .project-img {
+    width: 100%; height: 240px; object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .project-card:hover .project-img { transform: scale(1.08); }
+  .project-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(10,10,15,0.95) 0%, transparent 60%);
+    opacity: 0; transition: opacity 0.4s;
+    display: flex; align-items: flex-end; padding: 1.5rem;
+  }
+  .project-card:hover .project-overlay { opacity: 1; }
+
+  /* Timeline */
+  .timeline-line {
+    position: absolute; left: 20px; top: 0; bottom: 0;
+    width: 2px; background: linear-gradient(to bottom, var(--accent), var(--accent-alt), transparent);
+  }
+  .timeline-dot {
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--accent); border: 3px solid var(--bg);
+    position: absolute; left: 15px; top: 5px;
+    box-shadow: 0 0 20px var(--glow);
+  }
+
+  /* Stats Counter */
+  .stat-number {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 900; font-size: clamp(2.5rem, 5vw, 4rem);
+    background: linear-gradient(135deg, var(--accent), var(--accent-alt));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Contact Form */
+  .form-input {
+    width: 100%; padding: 1rem 1.25rem;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; color: var(--fg);
+    font-family: 'Space Grotesk', sans-serif; font-size: 0.95rem;
+    transition: all 0.3s; outline: none;
+  }
+  .form-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0,230,138,0.1);
+  }
+  .form-input::placeholder { color: var(--fg-muted); }
+
+  /* QR Modal */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 10000;
+    background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.4s;
+  }
+  .modal-overlay.active { opacity: 1; pointer-events: all; }
+  .modal-content {
+    background: var(--bg-secondary); border: 1px solid var(--border);
+    border-radius: 24px; padding: 3rem; text-align: center;
+    transform: scale(0.9) translateY(20px);
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    max-width: 420px; width: 90%;
+  }
+  .modal-overlay.active .modal-content { transform: scale(1) translateY(0); }
+
+  /* Reveal Animation */
+  .reveal {
+    opacity: 0; transform: translateY(40px);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
+  /* Marquee */
+  .marquee-track {
+    display: flex; gap: 3rem; animation: marquee 30s linear infinite;
+  }
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .marquee-item {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(2rem, 4vw, 4rem);
+    font-weight: 200; white-space: nowrap;
+    color: rgba(255,255,255,0.05);
+    -webkit-text-stroke: 1px rgba(255,255,255,0.08);
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 2rem; right: 2rem; z-index: 10001;
+    padding: 1rem 1.5rem; border-radius: 12px;
+    background: var(--accent); color: var(--bg);
+    font-weight: 600; font-size: 0.9rem;
+    transform: translateY(100px); opacity: 0;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* Floating Badge */
+  .float-badge {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.4rem 1rem; border-radius: 100px;
+    background: rgba(0,230,138,0.1); border: 1px solid rgba(0,230,138,0.2);
+    font-size: 0.75rem; color: var(--accent); font-weight: 500;
+    animation: floatBadge 3s ease-in-out infinite;
+  }
+  @keyframes floatBadge {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  /* Hexagon Grid */
+  .hex-grid { display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; }
+  .hex-item {
+    padding: 0.6rem 1.2rem; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    font-size: 0.8rem; color: var(--fg-muted);
+    transition: all 0.3s; font-family: 'JetBrains Mono', monospace;
+  }
+  .hex-item:hover {
+    background: rgba(0,230,138,0.1); border-color: rgba(0,230,138,0.3);
+    color: var(--accent); transform: translateY(-3px);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    section { padding: 6rem 1.25rem; }
+    nav { padding: 1rem; }
+    .cursor-dot, .cursor-ring { display: none; }
+    * { cursor: auto; }
+    .hero-title { font-size: clamp(2.2rem, 10vw, 4rem); }
+    .mobile-nav { display: flex !important; }
+    .desktop-nav { display: none !important; }
+  }
+  @media (min-width: 769px) {
+    .mobile-nav { display: none !important; }
+  }
+
+  /* Mobile Menu */
+  .mobile-menu {
+    position: fixed; inset: 0; z-index: 9999;
+    background: rgba(10,10,15,0.98); backdrop-filter: blur(20px);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 2rem;
+    opacity: 0; pointer-events: none; transition: opacity 0.4s;
+  }
+  .mobile-menu.active { opacity: 1; pointer-events: all; }
+  .mobile-menu a {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2rem; font-weight: 700; color: var(--fg);
+    text-decoration: none; transition: color 0.3s;
+  }
+  .mobile-menu a:hover { color: var(--accent); }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
 </head>
 <body>
 
-<!-- NAVBAR -->
-<nav>
-    <h2>Noreen Fatima</h2>
-    <ul>
-        <li><a href="#about">About</a></li>
-        <li><a href="#projects">Projects</a></li>
-        <li><a href="#skills">Skills</a></li>
-        <li><a href="#contact">Contact</a></li>
-    </ul>
+<!-- Custom Cursor -->
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- Particles -->
+<canvas id="particle-canvas"></canvas>
+
+<!-- Background Effects -->
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+<div class="noise"></div>
+
+<!-- Navigation -->
+<nav id="navbar">
+  <div class="max-w-7xl mx-auto flex items-center justify-between">
+    <a href="#hero" class="text-lg font-bold tracking-tight" style="font-family:'Outfit',sans-serif; text-decoration:none; color:var(--fg);">
+      <span style="color:var(--accent);">&lt;</span>YN<span style="color:var(--accent);">/&gt;</span>
+    </a>
+    <div class="desktop-nav flex items-center gap-8">
+      <a href="#about" class="nav-link">About</a>
+      <a href="#skills" class="nav-link">Skills</a>
+      <a href="#projects" class="nav-link">Projects</a>
+      <a href="#experience" class="nav-link">Experience</a>
+      <a href="#contact" class="nav-link">Contact</a>
+      <button onclick="openQRModal()" class="mag-btn" style="padding:0.6rem 1.5rem; font-size:0.75rem;">
+        <i class="fas fa-qrcode"></i>
+        <span>QR Code</span>
+      </button>
+    </div>
+    <button class="mobile-nav" onclick="toggleMobileMenu()" style="background:none;border:none;color:var(--fg);font-size:1.5rem;">
+      <i class="fas fa-bars" id="menuIcon"></i>
+    </button>
+  </div>
 </nav>
 
-<!-- HERO -->
-<header class="hero">
-    <h1>AI / Machine Learning Engineer</h1>
-    <p>Building intelligent systems with LLMs & real-world deployment</p>
-    <a href="#projects" class="btn">View My Work</a>
-</header>
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#about" onclick="toggleMobileMenu()">About</a>
+  <a href="#skills" onclick="toggleMobileMenu()">Skills</a>
+  <a href="#projects" onclick="toggleMobileMenu()">Projects</a>
+  <a href="#experience" onclick="toggleMobileMenu()">Experience</a>
+  <a href="#contact" onclick="toggleMobileMenu()">Contact</a>
+  <button onclick="openQRModal();toggleMobileMenu();" class="mag-btn" style="margin-top:1rem;">
+    <i class="fas fa-qrcode"></i><span>Get QR Code</span>
+  </button>
+</div>
 
-<!-- ABOUT -->
-<section id="about">
-    <h2>About Me</h2>
-    <p>
-        Final-year BSIT student focused on Artificial Intelligence.
-        I build and deploy AI applications using Hugging Face and work on LLM-based systems using RAG.
+<!-- Hero Section -->
+<section id="hero" class="flex items-center justify-center relative">
+  <div class="max-w-6xl mx-auto w-full">
+    <div class="mb-6 reveal">
+      <div class="float-badge">
+        <span style="width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block;"></span>
+        Available for opportunities
+      </div>
+    </div>
+    <h1 class="hero-title mb-8">
+      <span class="line"><span>Hi, I'm</span></span>
+      <span class="line"><span class="gradient-text" id="heroName">Your Name</span></span>
+      <span class="line"><span style="font-weight:200;color:var(--fg-muted);font-size:0.6em;" class="typed-text" id="typedText"></span></span>
+    </h1>
+    <p class="text-lg md:text-xl max-w-xl mb-10 reveal reveal-delay-2" style="color:var(--fg-muted);line-height:1.7;">
+      I craft digital experiences that merge stunning design with powerful technology. Turning complex problems into elegant solutions.
     </p>
+    <div class="flex flex-wrap gap-4 reveal reveal-delay-3">
+      <a href="#projects" class="mag-btn">
+        <span>View My Work</span>
+        <i class="fas fa-arrow-right"></i>
+      </a>
+      <a href="#contact" class="mag-btn mag-btn-outline">
+        <span>Let's Talk</span>
+        <i class="fas fa-paper-plane"></i>
+      </a>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <span style="font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--fg-muted);">Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
 </section>
 
-<!-- PROJECTS -->
-<section id="projects">
-    <h2>Projects</h2>
+<!-- Marquee -->
+<div style="overflow:hidden;padding:2rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);position:relative;z-index:2;">
+  <div class="marquee-track">
+    <span class="marquee-item">Frontend Developer</span>
+    <span class="marquee-item" style="color:rgba(0,230,138,0.1);">&bull;</span>
+    <span class="marquee-item">UI/UX Designer</span>
+    <span class="marquee-item" style="color:rgba(0,230,138,0.1);">&bull;</span>
+    <span class="marquee-item">Problem Solver</span>
+    <span class="marquee-item" style="color:rgba(0,230,138,0.1);">&bull;</span>
+    <span class="marquee-item">Creative Thinker</span>
+    <span class="marquee-item" style="color:rgba(0,230,138,0.1);">&bull;</span>
+    <span class="marquee-item">Frontend Developer</span>
+    <span class="marquee-item" style="color:rgba(0,230,138,0.1);">&bull;</span>
+    <span class="marquee-item">UI/UX Designer</span>
+    <span class="marquee-item" style="color:rgba(0,230,138,0.1);">&bull;</span>
+    <span class="marquee-item">Problem Solver</span>
+    <span class="marquee-item" style="color:rgba(0,230,138,0.1);">&bull;</span>
+    <span class="marquee-item">Creative Thinker</span>
+  </div>
+</div>
 
-    <div class="card">
-        <h3>MedAISunnah (FYP)</h3>
-        <p>AI-powered medical advisory system using LLMs and Retrieval-Augmented Generation.</p>
-    </div>
-
-    <div class="card">
-        <h3>Hugging Face AI Apps</h3>
-        <p>Deployed multiple real-world AI applications.</p>
-        <div class="links">
-            <a href="#">RAG PDF Reader</a>
-            <a href="#">Voice AI Assistant</a>
-            <a href="#">English to Urdu Translator</a>
+<!-- About Section -->
+<section id="about" class="flex items-center">
+  <div class="max-w-6xl mx-auto w-full">
+    <div class="grid md:grid-cols-2 gap-16 items-center">
+      <div>
+        <div class="section-label reveal">About Me</div>
+        <h2 class="section-title mt-4 mb-6 reveal reveal-delay-1">Passionate about building <span class="gradient-text">meaningful</span> digital products</h2>
+        <p class="mb-6 reveal reveal-delay-2" style="color:var(--fg-muted);line-height:1.8;">
+          With over 3 years of experience in web development, I specialize in creating responsive, accessible, and visually stunning web applications. I believe in writing clean, maintainable code and delivering pixel-perfect designs.
+        </p>
+        <p class="mb-8 reveal reveal-delay-3" style="color:var(--fg-muted);line-height:1.8;">
+          When I'm not coding, you'll find me exploring new technologies, contributing to open-source projects, or sharing knowledge through tech blogs and community meetups.
+        </p>
+        <div class="flex flex-wrap gap-3 reveal reveal-delay-4">
+          <div class="hex-item"><i class="fas fa-map-marker-alt" style="color:var(--accent);margin-right:0.4rem;"></i>San Francisco, CA</div>
+          <div class="hex-item"><i class="fas fa-graduation-cap" style="color:var(--accent);margin-right:0.4rem;"></i>CS Degree</div>
+          <div class="hex-item"><i class="fas fa-language" style="color:var(--accent);margin-right:0.4rem;"></i>English, Spanish</div>
         </div>
+      </div>
+      <div class="reveal reveal-delay-2">
+        <div class="glass-card tilt-card p-8" style="position:relative;">
+          <div style="position:absolute;top:-1px;left:-1px;right:-1px;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent-alt),#ff6b35);border-radius:20px 20px 0 0;"></div>
+          <div class="grid grid-cols-2 gap-6">
+            <div class="text-center">
+              <div class="stat-number" data-target="50">0</div>
+              <div style="color:var(--fg-muted);font-size:0.8rem;text-transform:uppercase;letter-spacing:0.1em;margin-top:0.25rem;">Projects Done</div>
+            </div>
+            <div class="text-center">
+              <div class="stat-number" data-target="30">0</div>
+              <div style="color:var(--fg-muted);font-size:0.8rem;text-transform:uppercase;letter-spacing:0.1em;margin-top:0.25rem;">Happy Clients</div>
+            </div>
+            <div class="text-center">
+              <div class="stat-number" data-target="3">0</div>
+              <div style="color:var(--fg-muted);font-size:0.8rem;text-transform:uppercase;letter-spacing:0.1em;margin-top:0.25rem;">Years Exp.</div>
+            </div>
+            <div class="text-center">
+              <div class="stat-number" data-target="15">0</div>
+              <div style="color:var(--fg-muted);font-size:0.8rem;text-transform:uppercase;letter-spacing:0.1em;margin-top:0.25rem;">Awards</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-
-    <div class="card">
-        <h3>IoT ML Projects</h3>
-        <p>Clap detection & object detection using Edge Impulse.</p>
-    </div>
-
+  </div>
 </section>
 
-<!-- SKILLS -->
+<!-- Skills Section -->
 <section id="skills">
-    <h2>Skills</h2>
-    <div class="skills-grid">
-        <span>Python</span>
-        <span>Machine Learning</span>
-        <span>LLMs</span>
-        <span>RAG</span>
-        <span>Hugging Face</span>
-        <span>Pandas</span>
-        <span>NumPy</span>
-        <span>Git</span>
+  <div class="max-w-6xl mx-auto w-full">
+    <div class="text-center mb-16">
+      <div class="section-label justify-center reveal">My Toolkit</div>
+      <h2 class="section-title mt-4 reveal reveal-delay-1">Skills & Technologies</h2>
     </div>
+
+    <!-- Skill Categories -->
+    <div class="grid md:grid-cols-3 gap-6 mb-16">
+      <div class="glass-card tilt-card p-6 reveal">
+        <div style="width:50px;height:50px;border-radius:14px;background:rgba(0,230,138,0.1);display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;">
+          <i class="fas fa-code" style="color:var(--accent);font-size:1.2rem;"></i>
+        </div>
+        <h3 style="font-family:'Outfit',sans-serif;font-weight:700;font-size:1.2rem;margin-bottom:0.5rem;">Frontend</h3>
+        <p style="color:var(--fg-muted);font-size:0.85rem;line-height:1.7;margin-bottom:1.25rem;">Building responsive, interactive user interfaces with modern frameworks.</p>
+        <div class="space-y-3">
+          <div>
+            <div class="flex justify-between mb-1"><span style="font-size:0.8rem;">React / Next.js</span><span style="font-size:0.8rem;color:var(--accent);">95%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" data-width="95"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between mb-1"><span style="font-size:0.8rem;">TypeScript</span><span style="font-size:0.8rem;color:var(--accent);">90%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" data-width="90"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between mb-1"><span style="font-size:0.8rem;">Tailwind CSS</span><span style="font-size:0.8rem;color:var(--accent);">92%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" data-width="92"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card tilt-card p-6 reveal reveal-delay-1">
+        <div style="width:50px;height:50px;border-radius:14px;background:rgba(0,184,212,0.1);display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;">
+          <i class="fas fa-server" style="color:var(--accent-alt);font-size:1.2rem;"></i>
+        </div>
+        <h3 style="font-family:'Outfit',sans-serif;font-weight:700;font-size:1.2rem;margin-bottom:0.5rem;">Backend</h3>
+        <p style="color:var(--fg-muted);font-size:0.85rem;line-height:1.7;margin-bottom:1.25rem;">Designing scalable APIs and server-side architectures.</p>
+        <div class="space-y-3">
+          <div>
+            <div class="flex justify-between mb-1"><span style="font-size:0.8rem;">Node.js / Express</span><span style="font-size:0.8rem;color:var(--accent);">88%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" data-width="88"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between mb-1"><span style="font-size:0.8rem;">Python / Django</span><span style="font-size:0.8rem;color:var(--accent);">82%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" data-width="82"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between mb-1"><span style="font-size:0.8rem;">PostgreSQL / MongoDB</span><span style="font-size:0.8rem;color:var(--accent);">85%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" data-width="85"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card tilt-card p-6 reveal reveal-delay-2">
+        <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,107,53,0.1);display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;">
+          <i class="fas fa-palette" style="color:#ff6b35;font-size:1.2rem;"></i>
+        </div>
+        <h3 style="font-family:'Outfit',sans-serif;font-weight:700;font-size:1.2rem;margin-bottom:0.5rem;">Design & Tools</h3>
+        <p style="color:var(--fg-muted);font-size:0.85rem;line-height:1.7;margin-bottom:1.25rem;">Creating beautiful designs and streamlining workflows.</p>
+        <div class="space-y-3">
+          <div>
+            <div class="flex justify-between mb-1"><span style="font-size:0.8rem;">Figma / Adobe XD</span><span style="font-size:0.8rem;color:var(--accent);">90%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" data-width="90"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between mb-1"><span style="font-size:0.8rem;">Git / CI/CD</span><span style="font-size:0.8rem;color:var(--accent);">87%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" data-width="87"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between mb-1"><span style="font-size:0.8rem;">Docker / AWS</span><span style="font-size:0.8rem;color:var(--accent);">78%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" data-width="78"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tech Tags -->
+    <div class="hex-grid reveal">
+      <span class="hex-item">JavaScript</span>
+      <span class="hex-item">React</span>
+      <span class="hex-item">Vue.js</span>
+      <span class="hex-item">Next.js</span>
+      <span class="hex-item">TypeScript</span>
+      <span class="hex-item">Node.js</span>
+      <span class="hex-item">Python</span>
+      <span class="hex-item">GraphQL</span>
+      <span class="hex-item">REST APIs</span>
+      <span class="hex-item">PostgreSQL</span>
+      <span class="hex-item">MongoDB</span>
+      <span class="hex-item">Redis</span>
+      <span class="hex-item">Docker</span>
+      <span class="hex-item">AWS</span>
+      <span class="hex-item">Figma</span>
+      <span class="hex-item">Git</span>
+      <span class="hex-item">Webpack</span>
+      <span class="hex-item">Vite</span>
+      <span class="hex-item">Jest</span>
+      <span class="hex-item">Cypress</span>
+    </div>
+  </div>
 </section>
 
-<!-- CONTACT -->
+<!-- Projects Section -->
+<section id="projects">
+  <div class="max-w-6xl mx-auto w-full">
+    <div class="text-center mb-10">
+      <div class="section-label justify-center reveal">Selected Work</div>
+      <h2 class="section-title mt-4 reveal reveal-delay-1">Featured Projects</h2>
+    </div>
+
+    <!-- Filter Buttons -->
+    <div class="flex flex-wrap gap-3 justify-center mb-12 reveal reveal-delay-2">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="web">Web Apps</button>
+      <button class="filter-btn" data-filter="design">Design</button>
+      <button class="filter-btn" data-filter="mobile">Mobile</button>
+    </div>
+
+    <!-- Projects Grid -->
+    <div class="grid md:grid-cols-2 gap-8" id="projectsGrid">
+      <!-- Project 1 -->
+      <div class="project-card reveal" data-category="web">
+        <div style="position:relative;overflow:hidden;">
+          <img src="https://picsum.photos/seed/proj1/800/480.jpg" alt="E-Commerce Platform" class="project-img" loading="lazy">
+          <div class="project-overlay">
+            <div class="flex gap-3">
+              <a href="#" class="mag-btn" style="padding:0.5rem 1.2rem;font-size:0.7rem;"><span>Live Demo</span><i class="fas fa-external-link-alt"></i></a>
+              <a href="#" class="mag-btn mag-btn-outline" style="padding:0.5rem 1.2rem;font-size:0.7rem;"><span>GitHub</span><i class="fab fa-github"></i></a>
+            </div>
+          </div>
+        </div>
+        <div class="p-6">
+          <div class="flex items-center gap-2 mb-2">
+            <span style="font-size:0.7rem;color:var(--accent);font-family:'JetBrains Mono',monospace;background:rgba(0,230,138,0.1);padding:0.2rem 0.6rem;border-radius:4px;">Web App</span>
+          </div>
+          <h3 style="font-family:'Outfit',sans-serif;font-weight:700;font-size:1.3rem;margin-bottom:0.5rem;">E-Commerce Platform</h3>
+          <p style="color:var(--fg-muted);font-size:0.85rem;line-height:1.7;margin-bottom:1rem;">A full-stack e-commerce solution with real-time inventory, Stripe payments, and an admin dashboard.</p>
+          <div class="flex flex-wrap gap-2">
+            <span style="font-size:0.7rem;color:var(--fg-muted);background:var(--card);padding:0.2rem 0.6rem;border-radius:4px;border:1px solid var(--border);">Next.js</span>
+            <span style="font-size:0.7rem;color:var(--fg-muted);background:var(--card);padding:0.2rem 0.6rem;border-radius:4px;border:1px solid var(--border);">Node.js</span>
+            <span style="font-size:0.7rem;color:var(--fg-muted);background:var(--card);padding:0.2rem 0.6rem;border-radius:4px;border:1px solid var(--border);">PostgreSQL</span>
+            <span style="font-size:0.7rem;color:var(--fg-muted);background:var(--card);padding:0.2rem 0.6rem;border-radius:4px;border:1px solid var(--border);">Stripe</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Project 2 -->
+      <div class="project-card reveal reveal-delay-1" data-category="design">
+        <div style="position:relative;overflow:hidden;">
+          <img src="https://picsum.photos/seed/proj2/800/480.jpg" alt="SaaS Dashboard" class="project-img" loading="lazy">
+          <div class="project-overlay">
+            <div class="flex gap-3">
+              <a href="#" class="mag-btn" style="padding:0.5rem 1.2rem;font-size:0.7rem;"><span>Live Demo</span><i class="fas fa-external-link-alt"></i></a>
+              <a href="#" class="mag-btn mag-btn-outline" style="padding:0.5rem 1.2rem;font-size:0.7rem;"><span>GitHub</span><i class="fab fa-github"></i></a>
+            </div>
+          </div>
+        </div>
+        <div class="p-6">
+          <div class="flex items-center gap-2 mb-2">
+            <span style="font-size:0.7rem;color:var(--accent-alt);font-family:'JetBrains Mono',monospace;background:rgba(0,184,212,0.1);padding:0.2rem 0.6rem;border-radius:4px;">Design</span>
+          </div>
+          <h3 style="font-family:'Outfit',sans-serif;font-weight:700;font-size:1.3rem;margin-bottom:0.5rem;">SaaS Analytics Dashboard</h3>
+          <p style="color:var(--fg-muted);font-size:0.85rem;line-height:1.7;margin-bottom:1rem;">An intuitive analytics dashboard with real-time data visualization, custom widgets, and dark mode.</p>
+          <div class="flex flex-wrap gap-2">
+            <span style="font-size:0.7rem;color:var(--fg-muted);background:var(--card);padding:0.2rem 0.6rem;border-radius:4px;border:1px solid var(--border);">React</span>
+            <span style="font-size:0.7rem;color:var(--fg-muted);background:var(--card);padding:0.2rem 0.6rem;border-radius:4px;border:1px solid var(--border);">D3.js</span>
+            <span style="font-size:0.7rem;color:var(--fg-muted);background:var(--card);padding:0.2rem 0.6rem;border-radius:4px;border:1px solid var(--border);">Tailwind</span>
+            <span style="font-size:0.7rem;color:var(--fg-muted);background:var(--card);padding:0.2rem 0.6rem;border-radius:4px;border:1px solid var(--border);">Figma</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Project 3 -->
+      <div class="project-card reveal" data-category="mobile">
+        <div style="position:relative;overflow:hidden;">
+          <img src="https://picsum.photos/seed/proj3/800/480.jpg" alt="Fitness App" class="project-img" loading="lazy">
+          <div class="project-overlay">
+            <div class="flex gap-3">
+              <a href="#" class="mag-btn" style="padding:0.5rem 1.2rem;font-size:0.7rem;"><span>Live Demo</span><i class="fas fa-external-link-alt"></i></a>
+              <a href="#" class="mag-btn mag-btn-outline" style="padding:0.5rem 1.2rem;font-size:0.7rem;"><span>GitHub</span><i class="fab fa-github"></i></a>
+            </div>
+          </div>
+        </div>
+        <div class="p-6">
+          <div class="flex items-center gap-2 mb-2">
+            <span style="font-size:0.7rem;color:#ff6b35;font-family:'JetBrains Mono',monospace;background:rgba(255,107,53,0.1);padding:0.2rem 0.6rem;border-radius:4px;">Mobile</span>
+          </div>
+          <h3 style="font-family:'Outfit',sans-serif;font-weight:700;font-size:1.3rem;margin-bottom:0.5rem;">Fitness Tracker App</h3>
+          <p style="color:var(--fg-muted);font-size:0.85rem;line-height:1.7;margin-bottom:1rem;">A cross-platform mobile app with workout tracking, nutrition logging, and social features.</p>
+          <div class="flex flex-wrap gap-2">
+            <span style="font-size:0.7rem;color:var(--fg-muted);background:var(--card);padding:0.2rem 0.6rem;border-radius:4px;border:1px solid var(--border);">React Native</span>
+            <span style="font-size:0.7rem;color:var(--fg-muted);background:var(--card);padding:0.2rem 0.6rem;border-radius:4px;border:1px solid var(--border);">Firebase</span>
+            <span style="font-size:0.7rem;color:var(--fg-muted);background:var(--card);padding:0.2rem 0.6rem;border-radius:4px;border:1px solid var(--border);">Redux</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Project 4 -->
+      <div class="project-card reveal reveal-delay-1" data-category="web">
+        <div style="position:relative;overflow:hidden;">
+          <img src="https://picsum.photos/seed/proj4/800/480.jpg" alt="AI Chat Platform" class="project-img" loading="lazy">
+          <div class="project-overlay">
+            <div class="flex gap-3">
+              <a href="#" class="mag-btn" style="padding:0.5rem 1.2rem;font-size:0.7rem;"><span>Live Demo</span><i class="fas fa-external-link-alt"></i></a>
+              <a href="#" class="mag-btn mag-btn-outline" style="padding:0.5rem 1.2rem;font-size:0.7rem;"><span>GitHub</span><i class="fab fa-github"></i></a>
+            </div>
+          </div>
+        </div>
+        <div class="p-6">
+          <div class="flex items-center gap-2 mb-2">
+            <span style="font-size:0.7rem;color:var(--accent);font-family:'JetBrains Mono',monospace;background:rgba(0,230,138,0.1);padding:0.2rem 0.6rem;border-radius:4px;">Web App</span>
+          </div>
+          <h3 style="font-family:'Outfit',sans-serif;font-weight:700;font-size:1.3rem;margin-bottom:0.5rem;">AI Chat Platform</h3>
+          <p style="color:var(--fg-muted);font-size:0.85rem;line-height:1.7;margin-bottom:1rem;">A real-time AI-powered chat platform with multiple model support, conversation history, and team collaboration.</p>
+          <div class="flex flex-wrap gap-2">
+            <span style="font-size:0.7rem;color:var(--fg-muted);background:var(--card);padding:0.2rem 0.6rem;border-radius:4px;border:1px solid var(--border);">Vue.js</span>
+            <span style="font-size:0.7rem;color:var(--fg-muted);background:var(--card);padding:0.2rem 0.6rem;border-radius:4px;border:1px solid var(--border);">Python</span>
+            <span style="font-size:0.7rem;color:var(--fg-muted);background:var(--card);padding:0.2rem 0.6rem;border-radius:4px;border:1px solid var(--border);">WebSocket</span>
+            <span style="font-size:0.7rem;color:var(--fg-muted);background:var(--card);padding:0.2rem 0.6rem;border-radius:4px;border:1px solid var(--border);">OpenAI</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Experience Section -->
+<section id="experience">
+  <div class="max-w-6xl mx-auto w-full">
+    <div class="grid md:grid-cols-2 gap-16">
+      <div>
+        <div class="section-label reveal">Career Path</div>
+        <h2 class="section-title mt-4 mb-10 reveal reveal-delay-1">Work Experience</h2>
+        <div style="position:relative;padding-left:50px;">
+          <div class="timeline-line"></div>
+
+          <div class="mb-10 reveal reveal-delay-1" style="position:relative;">
+            <div class="timeline-dot"></div>
+            <div class="glass-card p-5">
+              <div style="font-size:0.7rem;color:var(--accent);font-family:'JetBrains Mono',monospace;margin-bottom:0.5rem;">2022 — Present</div>
+              <h3 style="font-family:'Outfit',sans-serif;font-weight:700;font-size:1.1rem;margin-bottom:0.25rem;">Senior Frontend Developer</h3>
+              <div style="color:var(--fg-muted);font-size:0.85rem;margin-bottom:0.75rem;">TechCorp Inc.</div>
+              <p style="color:var(--fg-muted);font-size:0.8rem;line-height:1.7;">Led a team of 5 developers in building a SaaS platform serving 100K+ users. Implemented micro-frontend architecture reducing build times by 60%.</p>
+            </div>
+          </div>
+
+          <div class="mb-10 reveal reveal-delay-2" style="position:relative;">
+            <div class="timeline-dot" style="background:var(--accent-alt);"></div>
+            <div class="glass-card p-5">
+              <div style="font-size:0.7rem;color:var(--accent-alt);font-family:'JetBrains Mono',monospace;margin-bottom:0.5rem;">2020 — 2022</div>
+              <h3 style="font-family:'Outfit',sans-serif;font-weight:700;font-size:1.1rem;margin-bottom:0.25rem;">Full Stack Developer</h3>
+              <div style="color:var(--fg-muted);font-size:0.85rem;margin-bottom:0.75rem;">Digital Agency X</div>
+              <p style="color:var(--fg-muted);font-size:0.8rem;line-height:1.7;">Built 20+ client projects from scratch. Specialized in React/Node.js stacks. Improved client site performance scores by an average of 40%.</p>
+            </div>
+          </div>
+
+          <div class="reveal reveal-delay-3" style="position:relative;">
+            <div class="timeline-dot" style="background:#ff6b35;"></div>
+            <div class="glass-card p-5">
+              <div style="font-size:0.7rem;color:#ff6b35;font-family:'JetBrains Mono',monospace;margin-bottom:0.5rem;">2019 — 2020</div>
+              <h3 style="font-family:'Outfit',sans-serif;font-weight:700;font-size:1.1rem;margin-bottom:0.25rem;">Junior Developer</h3>
+              <div style="color:var(--fg-muted);font-size:0.85rem;margin-bottom:0.75rem;">StartupHub</div>
+              <p style="color:var(--fg-muted);font-size:0.8rem;line-height:1.7;">Started my professional journey building MVPs for early-stage startups. Learned agile methodologies and rapid prototyping.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-label reveal">Education</div>
+        <h2 class="section-title mt-4 mb-10 reveal reveal-delay-1">Learning Journey</h2>
+
+        <div class="space-y-6">
+          <div class="glass-card p-6 reveal reveal-delay-1">
+            <div class="flex items-start gap-4">
+              <div style="width:50px;height:50px;border-radius:14px;background:rgba(0,230,138,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <i class="fas fa-university" style="color:var(--accent);"></i>
+              </div>
+              <div>
+                <h3 style="font-family:'Outfit',sans-serif;font-weight:700;font-size:1rem;">B.S. Computer Science</h3>
+                <div style="color:var(--fg-muted);font-size:0.85rem;">Stanford University — 2019</div>
+                <p style="color:var(--fg-muted);font-size:0.8rem;line-height:1.7;margin-top:0.5rem;">Focus on Human-Computer Interaction and Software Engineering. Dean's List all semesters.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass-card p-6 reveal reveal-delay-2">
+            <div class="flex items-start gap-4">
+              <div style="width:50px;height:50px;border-radius:14px;background:rgba(0,184,212,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <i class="fas fa-certificate" style="color:var(--accent-alt);"></i>
+              </div>
+              <div>
+                <h3 style="font-family:'Outfit',sans-serif;font-weight:700;font-size:1rem;">AWS Solutions Architect</h3>
+                <div style="color:var(--fg-muted);font-size:0.85rem;">Amazon Web Services — 2022</div>
+                <p style="color:var(--fg-muted);font-size:0.8rem;line-height:1.7;margin-top:0.5rem;">Professional certification in designing distributed systems on AWS infrastructure.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass-card p-6 reveal reveal-delay-3">
+            <div class="flex items-start gap-4">
+              <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,107,53,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <i class="fas fa-trophy" style="color:#ff6b35;"></i>
+              </div>
+              <div>
+                <h3 style="font-family:'Outfit',sans-serif;font-weight:700;font-size:1rem;">Google UX Design Certificate</h3>
+                <div style="color:var(--fg-muted);font-size:0.85rem;">Google — 2021</div>
+                <p style="color:var(--fg-muted);font-size:0.8rem;line-height:1.7;margin-top:0.5rem;">Comprehensive UX design program covering research, wireframing, prototyping, and usability testing.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials Section -->
+<section style="background:var(--bg-secondary);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+  <div class="max-w-6xl mx-auto w-full">
+    <div class="text-center mb-12">
+      <div class="section-label justify-center reveal">Testimonials</div>
+      <h2 class="section-title mt-4 reveal reveal-delay-1">What People Say</h2>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="glass-card p-6 reveal">
+        <div class="flex gap-1 mb-4">
+          <i class="fas fa-star" style="color:#fbbf24;font-size:0.8rem;"></i>
+          <i class="fas fa-star" style="color:#fbbf24;font-size:0.8rem;"></i>
+          <i class="fas fa-star" style="color:#fbbf24;font-size:0.8rem;"></i>
+          <i class="fas fa-star" style="color:#fbbf24;font-size:0.8rem;"></i>
+          <i class="fas fa-star" style="color:#fbbf24;font-size:0.8rem;"></i>
+        </div>
+        <p style="color:var(--fg-muted);font-size:0.85rem;line-height:1.8;margin-bottom:1.25rem;font-style:italic;">"One of the most talented developers I've worked with. Their attention to detail and ability to translate complex requirements into elegant code is remarkable."</p>
+        <div class="flex items-center gap-3">
+          <img src="https://picsum.photos/seed/person1/80/80.jpg" alt="Sarah Chen" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
+          <div>
+            <div style="font-weight:600;font-size:0.9rem;">Sarah Chen</div>
+            <div style="color:var(--fg-muted);font-size:0.75rem;">CTO, TechCorp Inc.</div>
+          </div>
+        </div>
+      </div>
+      <div class="glass-card p-6 reveal reveal-delay-1">
+        <div class="flex gap-1 mb-4">
+          <i class="fas fa-star" style="color:#fbbf24;font-size:0.8rem;"></i>
+          <i class="fas fa-star" style="color:#fbbf24;font-size:0.8rem;"></i>
+          <i class="fas fa-star" style="color:#fbbf24;font-size:0.8rem;"></i>
+          <i class="fas fa-star" style="color:#fbbf24;font-size:0.8rem;"></i>
+          <i class="fas fa-star" style="color:#fbbf24;font-size:0.8rem;"></i>
+        </div>
+        <p style="color:var(--fg-muted);font-size:0.85rem;line-height:1.8;margin-bottom:1.25rem;font-style:italic;">"Delivered our project ahead of schedule with exceptional quality. The codebase was clean, well-documented, and a joy for our team to maintain."</p>
+        <div class="flex items-center gap-3">
+          <img src="https://picsum.photos/seed/person2/80/80.jpg" alt="Marcus Johnson" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
+          <div>
+            <div style="font-weight:600;font-size:0.9rem;">Marcus Johnson</div>
+            <div style="color:var(--fg-muted);font-size:0.75rem;">Founder, StartupHub</div>
+          </div>
+        </div>
+      </div>
+      <div class="glass-card p-6 reveal reveal-delay-2">
+        <div class="flex gap-1 mb-4">
+          <i class="fas fa-star" style="color:#fbbf24;font-size:0.8rem;"></i>
+          <i class="fas fa-star" style="color:#fbbf24;font-size:0.8rem;"></i>
+          <i class="fas fa-star" style="color:#fbbf24;font-size:0.8rem;"></i>
+          <i class="fas fa-star" style="color:#fbbf24;font-size:0.8rem;"></i>
+          <i class="fas fa-star" style="color:#fbbf24;font-size:0.8rem;"></i>
+        </div>
+        <p style="color:var(--fg-muted);font-size:0.85rem;line-height:1.8;margin-bottom:1.25rem;font-style:italic;">"An incredible eye for design combined with deep technical knowledge. Our conversion rate increased by 35% after the redesign they led."</p>
+        <div class="flex items-center gap-3">
+          <img src="https://picsum.photos/seed/person3/80/80.jpg" alt="Emily Rodriguez" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
+          <div>
+            <div style="font-weight:600;font-size:0.9rem;">Emily Rodriguez</div>
+            <div style="color:var(--fg-muted);font-size:0.75rem;">VP of Product, AgencyX</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact Section -->
 <section id="contact">
-    <h2>Contact</h2>
-    <p>Email: noreen.fatima.rgc@gmail.com</p>
-    <p>GitHub: github.com/NoreenFatima6700</p>
-    <p>LinkedIn: linkedin.com/in/noreenfatima6700</p>
+  <div class="max-w-6xl mx-auto w-full">
+    <div class="grid md:grid-cols-2 gap-16">
+      <div>
+        <div class="section-label reveal">Get In Touch</div>
+        <h2 class="section-title mt-4 mb-6 reveal reveal-delay-1">Let's build something <span class="gradient-text">amazing</span> together</h2>
+        <p class="mb-10 reveal reveal-delay-2" style="color:var(--fg-muted);line-height:1.8;">
+          I'm always open to discussing new projects, creative ideas, or opportunities to be part of your vision. Drop me a message and I'll get back to you within 24 hours.
+        </p>
+        <div class="space-y-6 reveal reveal-delay-3">
+          <div class="flex items-center gap-4">
+            <div style="width:50px;height:50px;border-radius:14px;background:rgba(0,230,138,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <i class="fas fa-envelope" style="color:var(--accent);"></i>
+            </div>
+            <div>
+              <div style="font-size:0.75rem;color:var(--fg-muted);text-transform:uppercase;letter-spacing:0.1em;">Email</div>
+              <div style="font-weight:500;">hello@yourname.dev</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-4">
+            <div style="width:50px;height:50px;border-radius:14px;background:rgba(0,184,212,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <i class="fas fa-phone" style="color:var(--accent-alt);"></i>
+            </div>
+            <div>
+              <div style="font-size:0.75rem;color:var(--fg-muted);text-transform:uppercase;letter-spacing:0.1em;">Phone</div>
+              <div style="font-weight:500;">+1 (555) 123-4567</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-4">
+            <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,107,53,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <i class="fas fa-map-marker-alt" style="color:#ff6b35;"></i>
+            </div>
+            <div>
+              <div style="font-size:0.75rem;color:var(--fg-muted);text-transform:uppercase;letter-spacing:0.1em;">Location</div>
+              <div style="font-weight:500;">San Francisco, CA</div>
+            </div>
+          </div>
+        </div>
+        <div class="flex gap-4 mt-10 reveal reveal-delay-4">
+          <a href="#" style="width:44px;height:44px;border-radius:12px;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--fg-muted);transition:all 0.3s;text-decoration:none;" onmouseover="this.style.background='rgba(0,230,138,0.1)';this.style.borderColor='rgba(0,230,138,0.3)';this.style.color='var(--accent)'" onmouseout="this.style.background='var(--card)';this.style.borderColor='var(--border)';this.style.color='var(--fg-muted)'"><i class="fab fa-github"></i></a>
+          <a href="#" style="width:44px;height:44px;border-radius:12px;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--fg-muted);transition:all 0.3s;text-decoration:none;" onmouseover="this.style.background='rgba(0,230,138,0.1)';this.style.borderColor='rgba(0,230,138,0.3)';this.style.color='var(--accent)'" onmouseout="this.style.background='var(--card)';this.style.borderColor='var(--border)';this.style.color='var(--fg-muted)'"><i class="fab fa-linkedin-in"></i></a>
+          <a href="#" style="width:44px;height:44px;border-radius:12px;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--fg-muted);transition:all 0.3s;text-decoration:none;" onmouseover="this.style.background='rgba(0,230,138,0.1)';this.style.borderColor='rgba(0,230,138,0.3)';this.style.color='var(--accent)'" onmouseout="this.style.background='var(--card)';this.style.borderColor='var(--border)';this.style.color='var(--fg-muted)'"><i class="fab fa-twitter"></i></a>
+          <a href="#" style="width:44px;height:44px;border-radius:12px;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--fg-muted);transition:all 0.3s;text-decoration:none;" onmouseover="this.style.background='rgba(0,230,138,0.1)';this.style.borderColor='rgba(0,230,138,0.3)';this.style.color='var(--accent)'" onmouseout="this.style.background='var(--card)';this.style.borderColor='var(--border)';this.style.color='var(--fg-muted)'"><i class="fab fa-dribbble"></i></a>
+        </div>
+      </div>
+      <div class="reveal reveal-delay-2">
+        <form id="contactForm" class="glass-card p-8" style="position:relative;">
+          <div style="position:absolute;top:-1px;left:-1px;right:-1px;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent-alt),#ff6b35);border-radius:20px 20px 0 0;"></div>
+          <div class="space-y-5">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label style="font-size:0.75rem;color:var(--fg-muted);text-transform:uppercase;letter-spacing:0.1em;display:block;margin-bottom:0.5rem;">Name</label>
+                <input type="text" class="form-input" placeholder="John Doe" required id="formName">
+              </div>
+              <div>
+                <label style="font-size:0.75rem;color:var(--fg-muted);text-transform:uppercase;letter-spacing:0.1em;display:block;margin-bottom:0.5rem;">Email</label>
+                <input type="email" class="form-input" placeholder="john@example.com" required id="formEmail">
+              </div>
+            </div>
+            <div>
+              <label style="font-size:0.75rem;color:var(--fg-muted);text-transform:uppercase;letter-spacing:0.1em;display:block;margin-bottom:0.5rem;">Subject</label>
+              <input type="text" class="form-input" placeholder="Project Inquiry" required id="formSubject">
+            </div>
+            <div>
+              <label style="font-size:0.75rem;color:var(--fg-muted);text-transform:uppercase;letter-spacing:0.1em;display:block;margin-bottom:0.5rem;">Message</label>
+              <textarea class="form-input" rows="5" placeholder="Tell me about your project..." required id="formMessage" style="resize:vertical;min-height:120px;"></textarea>
+            </div>
+            <button type="submit" class="mag-btn w-full justify-center">
+              <span>Send Message</span>
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 </section>
 
-<!-- FOOTER -->
-<footer>
-    <p>© 2026 Noreen Fatima | AI Portfolio</p>
+<!-- Footer -->
+<footer style="border-top:1px solid var(--border);padding:2rem;position:relative;z-index:2;">
+  <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+    <div style="color:var(--fg-muted);font-size:0.8rem;">
+      Designed & Built by <span style="color:var(--accent);font-weight:600;">Your Name</span> — 2024
+    </div>
+    <div style="color:var(--fg-muted);font-size:0.8rem;font-family:'JetBrains Mono',monospace;">
+      Made with <span style="color:var(--accent);">&hearts;</span> and lots of coffee
+    </div>
+  </div>
 </footer>
 
-<script src="script.js"></script>
+<!-- QR Code Modal -->
+<div class="modal-overlay" id="qrModal">
+  <div class="modal-content">
+    <button onclick="closeQRModal()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--fg-muted);font-size:1.2rem;transition:color 0.3s;" onmouseover="this.style.color='var(--fg)'" onmouseout="this.style.color='var(--fg-muted)'"><i class="fas fa-times"></i></button>
+    <div style="width:60px;height:60px;border-radius:16px;background:rgba(0,230,138,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;">
+      <i class="fas fa-qrcode" style="color:var(--accent);font-size:1.5rem;"></i>
+    </div>
+    <h3 style="font-family:'Outfit',sans-serif;font-weight:700;font-size:1.4rem;margin-bottom:0.5rem;">Scan to Visit</h3>
+    <p style="color:var(--fg-muted);font-size:0.85rem;margin-bottom:1.5rem;">Point your camera at the QR code to open my portfolio</p>
+    <div style="background:white;padding:1rem;border-radius:16px;display:inline-block;margin-bottom:1rem;">
+      <img id="qrImage" src="" alt="QR Code" style="width:200px;height:200px;display:block;">
+    </div>
+    <div style="color:var(--fg-muted);font-size:0.7rem;font-family:'JetBrains Mono',monospace;word-break:break-all;" id="qrUrl"></div>
+    <button onclick="downloadQR()" class="mag-btn mt-4" style="padding:0.6rem 1.5rem;font-size:0.8rem;">
+      <i class="fas fa-download"></i>
+      <span>Download QR</span>
+    </button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ==================== CONFIGURATION ====================
+// EDIT THESE VALUES TO CUSTOMIZE YOUR PORTFOLIO
+const CONFIG = {
+  name: "Your Name",
+  roles: [
+    "Full Stack Developer",
+    "UI/UX Designer",
+    "Creative Problem Solver",
+    "Open Source Contributor"
+  ],
+  email: "hello@yourname.dev",
+  location: "San Francisco, CA",
+  // Update this URL after deploying your portfolio
+  portfolioUrl: window.location.href
+};
+
+// ==================== PARTICLE SYSTEM ====================
+const canvas = document.getElementById('particle-canvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+let mouseX = 0, mouseY = 0;
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+class Particle {
+  constructor() {
+    this.reset();
+  }
+  reset() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+    this.size = Math.random() * 2 + 0.5;
+    this.speedX = (Math.random() - 0.5) * 0.3;
+    this.speedY = (Math.random() - 0.5) * 0.3;
+    this.opacity = Math.random() * 0.5 + 0.1;
+  }
+  update() {
+    this.x += this.speedX;
+    this.y += this.speedY;
+    // Mouse repulsion
+    const dx = this.x - mouseX;
+    const dy = this.y - mouseY;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist < 120) {
+      const force = (120 - dist) / 120;
+      this.x += (dx / dist) * force * 2;
+      this.y += (dy / dist) * force * 2;
+    }
+    if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
+      this.reset();
+    }
+  }
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(0, 230, 138, ${this.opacity})`;
+    ctx.fill();
+  }
+}
+
+// Create particles
+for (let i = 0; i < 80; i++) {
+  particles.push(new Particle());
+}
+
+function drawConnections() {
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 150) {
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.strokeStyle = `rgba(0, 230, 138, ${0.05 * (1 - dist / 150)})`;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
+    }
+  }
+}
+
+function animateParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => { p.update(); p.draw(); });
+  drawConnections();
+  requestAnimationFrame(animateParticles);
+}
+animateParticles();
+
+// ==================== CUSTOM CURSOR ====================
+const cursorDot = document.getElementById('cursorDot');
+const cursorRing = document.getElementById('cursorRing');
+let cursorX = 0, cursorY = 0;
+let ringX = 0, ringY = 0;
+
+document.addEventListener('mousemove', (e) => {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+  cursorX = e.clientX;
+  cursorY = e.clientY;
+  cursorDot.style.left = cursorX - 4 + 'px';
+  cursorDot.style.top = cursorY - 4 + 'px';
+});
+
+function animateCursor() {
+  ringX += (cursorX - ringX) * 0.15;
+  ringY += (cursorY - ringY) * 0.15;
+  cursorRing.style.left = ringX - 20 + 'px';
+  cursorRing.style.top = ringY - 20 + 'px';
+  requestAnimationFrame(animateCursor);
+}
+animateCursor();
+
+// Hover effects on interactive elements
+document.querySelectorAll('a, button, .glass-card, .project-card, .hex-item, .filter-btn, .form-input').forEach(el => {
+  el.addEventListener('mouseenter', () => cursorRing.classList.add('hover'));
+  el.addEventListener('mouseleave', () => cursorRing.classList.remove('hover'));
+});
+
+// ==================== TYPING EFFECT ====================
+const typedEl = document.getElementById('typedText');
+let roleIndex = 0, charIndex = 0, isDeleting = false;
+
+function typeEffect() {
+  const currentRole = CONFIG.roles[roleIndex];
+  if (isDeleting) {
+    typedEl.textContent = currentRole.substring(0, charIndex - 1);
+    charIndex--;
+  } else {
+    typedEl.textContent = currentRole.substring(0, charIndex + 1);
+    charIndex++;
+  }
+  let speed = isDeleting ? 30 : 60;
+  if (!isDeleting && charIndex === currentRole.length) {
+    speed = 2000;
+    isDeleting = true;
+  } else if (isDeleting && charIndex === 0) {
+    isDeleting = false;
+    roleIndex = (roleIndex + 1) % CONFIG.roles.length;
+    speed = 500;
+  }
+  setTimeout(typeEffect, speed);
+}
+typeEffect();
+
+// ==================== SCROLL REVEAL ====================
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      // Animate skill bars
+      entry.target.querySelectorAll('.skill-bar-fill').forEach(bar => {
+        bar.style.width = bar.dataset.width + '%';
+      });
+      // Animate counters
+      entry.target.querySelectorAll('.stat-number[data-target]').forEach(counter => {
+        animateCounter(counter);
+      });
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ==================== COUNTER ANIMATION ====================
+function animateCounter(el) {
+  if (el.dataset.animated) return;
+  el.dataset.animated = 'true';
+  const target = parseInt(el.dataset.target);
+  const duration = 2000;
+  const startTime = performance.now();
+  function update(currentTime) {
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    // Ease out cubic
+    const eased = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.round(target * eased) + '+';
+    if (progress < 1) requestAnimationFrame(update);
+  }
+  requestAnimationFrame(update);
+}
+
+// ==================== NAVBAR SCROLL ====================
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 50) {
+    navbar.classList.add('scrolled');
+  } else {
+    navbar.classList.remove('scrolled');
+  }
+  // Active nav link
+  const sections = document.querySelectorAll('section[id]');
+  let current = '';
+  sections.forEach(section => {
+    const sectionTop = section.offsetTop - 200;
+    if (window.scrollY >= sectionTop) current = section.getAttribute('id');
+  });
+  document.querySelectorAll('.nav-link').forEach(link => {
+    link.classList.remove('active');
+    if (link.getAttribute('href') === '#' + current) link.classList.add('active');
+  });
+});
+
+// ==================== MOBILE MENU ====================
+function toggleMobileMenu() {
+  const menu = document.getElementById('mobileMenu');
+  const icon = document.getElementById('menuIcon');
+  menu.classList.toggle('active');
+  icon.className = menu.classList.contains('active') ? 'fas fa-times' : 'fas fa-bars';
+}
+
+// ==================== 3D TILT EFFECT ====================
+document.querySelectorAll('.tilt-card').forEach(card => {
+  card.addEventListener('mousemove', (e) => {
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateX = (y - centerY) / centerY * -8;
+    const rotateY = (x - centerX) / centerX * 8;
+    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-5px)`;
+    // Update glow position
+    card.style.setProperty('--mouse-x', x + 'px');
+    card.style.setProperty('--mouse-y', y + 'px');
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)';
+  });
+});
+
+// ==================== PROJECT FILTER ====================
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const filter = btn.dataset.filter;
+    document.querySelectorAll('.project-card').forEach(card => {
+      if (filter === 'all' || card.dataset.category === filter) {
+        card.style.display = 'block';
+        setTimeout(() => { card.style.opacity = '1'; card.style.transform = 'translateY(0)'; }, 50);
+      } else {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        setTimeout(() => { card.style.display = 'none'; }, 400);
+      }
+    });
+  });
+});
+
+// ==================== CONTACT FORM ====================
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const name = document.getElementById('formName').value;
+  const email = document.getElementById('formEmail').value;
+  const subject = document.getElementById('formSubject').value;
+  const message = document.getElementById('formMessage').value;
+
+  if (!name || !email || !subject || !message) {
+    showToast('Please fill in all fields', 'error');
+    return;
+  }
+  // Simple email validation
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    showToast('Please enter a valid email', 'error');
+    return;
+  }
+
+  // Simulate sending (replace with actual email service)
+  showToast(`Thanks ${name}! Your message has been sent.`, 'success');
+  this.reset();
+});
+
+// ==================== TOAST ====================
+function showToast(message, type) {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.style.background = type === 'error' ? '#ef4444' : 'var(--accent)';
+  toast.style.color = type === 'error' ? '#fff' : 'var(--bg)';
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3500);
+}
+
+// ==================== QR CODE ====================
+function generateQR() {
+  const url = CONFIG.portfolioUrl;
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(url)}&bgcolor=ffffff&color=0a0a0f&format=png`;
+  document.getElementById('qrImage').src = qrUrl;
+  document.getElementById('qrUrl').textContent = url;
+}
+
+function openQRModal() {
+  generateQR();
+  document.getElementById('qrModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeQRModal() {
+  document.getElementById('qrModal').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('qrModal').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('qrModal')) closeQRModal();
+});
+
+function downloadQR() {
+  const img = document.getElementById('qrImage');
+  const link = document.createElement('a');
+  link.download = 'portfolio-qr-code.png';
+  link.href = img.src;
+  link.click();
+  showToast('QR Code downloaded successfully!', 'success');
+}
+
+// ==================== MAGNETIC BUTTONS ====================
+document.querySelectorAll('.mag-btn').forEach(btn => {
+  btn.addEventListener('mousemove', (e) => {
+    const rect = btn.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    btn.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+  });
+  btn.addEventListener('mouseleave', () => {
+    btn.style.transform = 'translate(0, 0)';
+  });
+});
+
+// ==================== KEYBOARD SUPPORT ====================
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeQRModal();
+    const menu = document.getElementById('mobileMenu');
+    if (menu.classList.contains('active')) toggleMobileMenu();
+  }
+});
+
+// ==================== SMOOTH SCROLL ====================
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function(e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+
+// Set hero name
+document.getElementById('heroName').textContent = CONFIG.name;
+</script>
 </body>
 </html>
