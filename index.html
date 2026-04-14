@@ -1,62 +1,1725 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Portfolio of [Your Name] - [Your Role]">
-  <title>Your Name | Portfolio</title>
-  <link rel="stylesheet" href="style.css">
-  <!-- GSAP for premium animations -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Noreen Fatima — AI/ML Engineer Portfolio</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Outfit:wght@200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --bg-secondary: #12121a;
+    --fg: #f0ede6;
+    --fg-muted: #8a8a9a;
+    --accent: #00e68a;
+    --accent-alt: #00b8d4;
+    --card: rgba(255,255,255,0.03);
+    --card-hover: rgba(255,255,255,0.07);
+    --border: rgba(255,255,255,0.06);
+    --glow: rgba(0,230,138,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
+
+  html {
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent) var(--bg);
+  }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Custom Cursor */
+  .cursor-dot {
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 99999;
+    transition: transform 0.1s;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    width: 40px; height: 40px;
+    border: 1.5px solid var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 99998;
+    transition: width 0.3s, height 0.3s, border-color 0.3s;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring.hover {
+    width: 70px; height: 70px;
+    border-color: var(--accent-alt);
+    background: rgba(0,230,138,0.05);
+  }
+
+  /* Particle Canvas */
+  #particle-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* Gradient Orbs */
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.3;
+    animation: orbFloat 20s ease-in-out infinite;
+    pointer-events: none;
+  }
+  .orb-1 { width: 600px; height: 600px; background: var(--accent); top: -200px; left: -200px; animation-delay: 0s; }
+  .orb-2 { width: 500px; height: 500px; background: var(--accent-alt); bottom: -150px; right: -150px; animation-delay: -7s; }
+  .orb-3 { width: 400px; height: 400px; background: #ff6b35; top: 50%; left: 50%; transform: translate(-50%,-50%); animation-delay: -14s; opacity: 0.15; }
+
+  @keyframes orbFloat {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    25% { transform: translate(60px, -40px) scale(1.1); }
+    50% { transform: translate(-30px, 60px) scale(0.95); }
+    75% { transform: translate(40px, 30px) scale(1.05); }
+  }
+
+  /* Noise Overlay */
+  .noise {
+    position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 128px 128px;
+  }
+
+  /* Navigation */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    padding: 1.2rem 2rem;
+    backdrop-filter: blur(20px);
+    background: rgba(10,10,15,0.7);
+    border-bottom: 1px solid var(--border);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  nav.scrolled { padding: 0.8rem 2rem; background: rgba(10,10,15,0.9); }
+  .nav-link {
+    position: relative; color: var(--fg-muted); text-decoration: none;
+    font-size: 0.85rem; font-weight: 500; letter-spacing: 0.05em;
+    text-transform: uppercase; transition: color 0.3s;
+  }
+  .nav-link::after {
+    content: ''; position: absolute; bottom: -4px; left: 0;
+    width: 0; height: 2px; background: var(--accent);
+    transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .nav-link:hover, .nav-link.active { color: var(--fg); }
+  .nav-link:hover::after, .nav-link.active::after { width: 100%; }
+
+  /* Sections */
+  section {
+    position: relative; z-index: 2;
+    min-height: 100vh; padding: 8rem 2rem;
+  }
+
+  /* Hero Section */
+  .hero-title {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 900; font-size: clamp(3rem, 8vw, 7rem);
+    line-height: 0.95; letter-spacing: -0.03em;
+  }
+  .hero-title .line {
+    display: block; overflow: hidden;
+  }
+  .hero-title .line span {
+    display: inline-block;
+    transform: translateY(110%);
+    animation: slideUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .hero-title .line:nth-child(2) span { animation-delay: 0.15s; }
+  .hero-title .line:nth-child(3) span { animation-delay: 0.3s; }
+
+  @keyframes slideUp {
+    to { transform: translateY(0); }
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, var(--accent), var(--accent-alt), #ff6b35);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 5s ease-in-out infinite;
+  }
+  @keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  /* Typing effect */
+  .typed-text::after {
+    content: '|';
+    animation: blink 0.8s step-end infinite;
+    color: var(--accent);
+    font-weight: 300;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* Magnetic Button */
+  .mag-btn {
+    position: relative; display: inline-flex; align-items: center; gap: 0.75rem;
+    padding: 1rem 2.5rem; border: none; border-radius: 100px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.9rem; font-weight: 600; letter-spacing: 0.05em;
+    text-transform: uppercase; text-decoration: none;
+    color: var(--bg); background: var(--accent);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s;
+    overflow: hidden;
+  }
+  .mag-btn::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--accent-alt), #ff6b35);
+    opacity: 0; transition: opacity 0.4s;
+  }
+  .mag-btn:hover::before { opacity: 1; }
+  .mag-btn:hover {
+    box-shadow: 0 0 40px var(--glow), 0 0 80px rgba(0,230,138,0.1);
+  }
+  .mag-btn span, .mag-btn i { position: relative; z-index: 1; }
+
+  .mag-btn-outline {
+    background: transparent; color: var(--fg);
+    border: 1.5px solid var(--border);
+  }
+  .mag-btn-outline::before {
+    background: var(--card-hover);
+  }
+  .mag-btn-outline:hover { border-color: var(--accent); }
+
+  /* Scroll Indicator */
+  .scroll-indicator {
+    position: absolute; bottom: 3rem; left: 50%;
+    transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+  }
+  .scroll-line {
+    width: 1px; height: 60px; background: var(--border);
+    position: relative; overflow: hidden;
+  }
+  .scroll-line::after {
+    content: ''; position: absolute; top: -100%; left: 0;
+    width: 100%; height: 50%;
+    background: var(--accent);
+    animation: scrollDown 2s ease-in-out infinite;
+  }
+  @keyframes scrollDown {
+    0% { top: -50%; } 100% { top: 150%; }
+  }
+
+  /* Section Headers */
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem; color: var(--accent);
+    letter-spacing: 0.2em; text-transform: uppercase;
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .section-label::before {
+    content: ''; width: 40px; height: 1px; background: var(--accent);
+  }
+  .section-title {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800; font-size: clamp(2rem, 4vw, 3.5rem);
+    line-height: 1.1; letter-spacing: -0.02em;
+  }
+
+  /* Cards */
+  .glass-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative; overflow: hidden;
+  }
+  .glass-card::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(0,230,138,0.04), transparent 40%);
+    pointer-events: none;
+  }
+  .glass-card:hover {
+    border-color: rgba(0,230,138,0.2);
+    transform: translateY(-5px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+
+  /* 3D Tilt */
+  .tilt-card { transform-style: preserve-3d; perspective: 1000px; }
+
+  /* Skill Bars */
+  .skill-bar-track {
+    width: 100%; height: 6px; background: var(--border);
+    border-radius: 3px; overflow: hidden;
+  }
+  .skill-bar-fill {
+    height: 100%; border-radius: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-alt));
+    width: 0; transition: width 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Project Filter */
+  .filter-btn {
+    padding: 0.5rem 1.25rem; border: 1px solid var(--border);
+    border-radius: 100px; background: transparent;
+    color: var(--fg-muted); font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.8rem; font-weight: 500; letter-spacing: 0.05em;
+    text-transform: uppercase; transition: all 0.3s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    background: var(--accent); color: var(--bg);
+    border-color: var(--accent);
+  }
+
+  /* Project Card */
+  .project-card {
+    border-radius: 20px; overflow: hidden;
+    background: var(--card); border: 1px solid var(--border);
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .project-card:hover {
+    border-color: rgba(0,230,138,0.3);
+    transform: translateY(-8px);
+    box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+  }
+  .project-img {
+    width: 100%; height: 240px; object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .project-card:hover .project-img { transform: scale(1.08); }
+  .project-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(10,10,15,0.95) 0%, transparent 60%);
+    opacity: 0; transition: opacity 0.4s;
+    display: flex; align-items: flex-end; padding: 1.5rem;
+  }
+  .project-card:hover .project-overlay { opacity: 1; }
+
+  /* Timeline */
+  .timeline-line {
+    position: absolute; left: 20px; top: 0; bottom: 0;
+    width: 2px; background: linear-gradient(to bottom, var(--accent), var(--accent-alt), transparent);
+  }
+  .timeline-dot {
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--accent); border: 3px solid var(--bg);
+    position: absolute; left: 15px; top: 5px;
+    box-shadow: 0 0 20px var(--glow);
+  }
+
+  /* Stats Counter */
+  .stat-number {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 900; font-size: clamp(2.5rem, 5vw, 4rem);
+    background: linear-gradient(135deg, var(--accent), var(--accent-alt));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .stat-decimal {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 900; font-size: clamp(2.5rem, 5vw, 4rem);
+    background: linear-gradient(135deg, var(--accent), var(--accent-alt));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Contact Form */
+  .form-input {
+    width: 100%; padding: 1rem 1.25rem;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; color: var(--fg);
+    font-family: 'Space Grotesk', sans-serif; font-size: 0.95rem;
+    transition: all 0.3s; outline: none;
+  }
+  .form-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0,230,138,0.1);
+  }
+  .form-input::placeholder { color: var(--fg-muted); }
+
+  /* QR Modal */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 10000;
+    background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.4s;
+  }
+  .modal-overlay.active { opacity: 1; pointer-events: all; }
+  .modal-content {
+    background: var(--bg-secondary); border: 1px solid var(--border);
+    border-radius: 24px; padding: 3rem; text-align: center;
+    transform: scale(0.9) translateY(20px);
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    max-width: 420px; width: 90%;
+    position: relative;
+  }
+  .modal-overlay.active .modal-content { transform: scale(1) translateY(0); }
+
+  /* Reveal Animation */
+  .reveal {
+    opacity: 0; transform: translateY(40px);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
+  /* Marquee */
+  .marquee-track {
+    display: flex; gap: 3rem; animation: marquee 30s linear infinite;
+  }
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .marquee-item {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(2rem, 4vw, 4rem);
+    font-weight: 200; white-space: nowrap;
+    color: rgba(255,255,255,0.05);
+    -webkit-text-stroke: 1px rgba(255,255,255,0.08);
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 2rem; right: 2rem; z-index: 10001;
+    padding: 1rem 1.5rem; border-radius: 12px;
+    background: var(--accent); color: var(--bg);
+    font-weight: 600; font-size: 0.9rem;
+    transform: translateY(100px); opacity: 0;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* Floating Badge */
+  .float-badge {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.4rem 1rem; border-radius: 100px;
+    background: rgba(0,230,138,0.1); border: 1px solid rgba(0,230,138,0.2);
+    font-size: 0.75rem; color: var(--accent); font-weight: 500;
+    animation: floatBadge 3s ease-in-out infinite;
+  }
+  @keyframes floatBadge {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  /* Hexagon Grid */
+  .hex-grid { display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; }
+  .hex-item {
+    padding: 0.6rem 1.2rem; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    font-size: 0.8rem; color: var(--fg-muted);
+    transition: all 0.3s; font-family: 'JetBrains Mono', monospace;
+  }
+  .hex-item:hover {
+    background: rgba(0,230,138,0.1); border-color: rgba(0,230,138,0.3);
+    color: var(--accent); transform: translateY(-3px);
+  }
+
+  /* Achievement Card */
+  .achievement-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+  }
+  .achievement-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-alt));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .achievement-card:hover {
+    border-color: rgba(0,230,138,0.2);
+    transform: translateY(-4px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+  }
+  .achievement-card:hover::after { opacity: 1; }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    section { padding: 6rem 1.25rem; }
+    nav { padding: 1rem; }
+    .cursor-dot, .cursor-ring { display: none; }
+    * { cursor: auto; }
+    .hero-title { font-size: clamp(2.2rem, 10vw, 4rem); }
+    .mobile-nav { display: flex !important; }
+    .desktop-nav { display: none !important; }
+  }
+  @media (min-width: 769px) {
+    .mobile-nav { display: none !important; }
+  }
+
+  /* Mobile Menu */
+  .mobile-menu {
+    position: fixed; inset: 0; z-index: 9999;
+    background: rgba(10,10,15,0.98); backdrop-filter: blur(20px);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 2rem;
+    opacity: 0; pointer-events: none; transition: opacity 0.4s;
+  }
+  .mobile-menu.active { opacity: 1; pointer-events: all; }
+  .mobile-menu a {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2rem; font-weight: 700; color: var(--fg);
+    text-decoration: none; transition: color 0.3s;
+  }
+  .mobile-menu a:hover { color: var(--accent); }
+
+  /* GPA Ring */
+  .gpa-ring {
+    width: 120px; height: 120px; position: relative;
+  }
+  .gpa-ring svg { transform: rotate(-90deg); }
+  .gpa-ring-text {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
 </head>
 <body>
-  <nav class="nav">
-    <div class="logo">YN</div>
-    <ul class="nav-links">
-      <li><a href="#about">About</a></li>
-      <li><a href="#skills">Skills</a></li>
-      <li><a href="#projects">Projects</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
-    <button id="theme-toggle">🌙</button>
-  </nav>
 
-  <header class="hero">
-    <h1 class="hero-title">Hi, I'm <span class="highlight">Your Name</span></h1>
-    <p class="hero-subtitle">Full-Stack Developer crafting performant, user-centric web experiences.</p>
-    <div class="hero-cta">
-      <a href="#projects" class="btn primary">View My Work</a>
-      <a href="assets/resume.pdf" class="btn secondary" download>Download CV</a>
-    </div>
-  </header>
+<!-- Custom Cursor -->
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
 
-  <section id="projects" class="section">
-    <h2>Featured Projects</h2>
-    <div class="filter-btns">
-      <button class="filter active" data-filter="all">All</button>
-      <button class="filter" data-filter="web">Web</button>
-      <button class="filter" data-filter="mobile">Mobile</button>
-    </div>
-    <div class="projects-grid" id="projects-container">
-      <!-- JS will populate -->
-    </div>
-  </section>
+<!-- Particles -->
+<canvas id="particle-canvas"></canvas>
 
-  <section id="contact" class="section">
-    <h2>Let's Build Something</h2>
-    <form action="https://formspree.io/f/YOUR_ID" method="POST" class="contact-form">
-      <input type="email" name="email" placeholder="Your Email" required>
-      <textarea name="message" placeholder="Your Message" required></textarea>
-      <button type="submit" class="btn primary">Send Message</button>
-    </form>
-    <div id="qr-container" class="qr-section">
-      <p>Scan to open on your phone</p>
-      <div id="qr-code"></div>
-    </div>
-  </section>
+<!-- Background Effects -->
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+<div class="noise"></div>
 
-  <script src="script.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<!-- Navigation -->
+<nav id="navbar">
+  <div class="max-w-7xl mx-auto flex items-center justify-between">
+    <a href="#hero" class="text-lg font-bold tracking-tight" style="font-family:'Outfit',sans-serif; text-decoration:none; color:var(--fg);">
+      <span style="color:var(--accent);">&lt;</span>NF<span style="color:var(--accent);">/&gt;</span>
+    </a>
+    <div class="desktop-nav flex items-center gap-8">
+      <a href="#about" class="nav-link">About</a>
+      <a href="#skills" class="nav-link">Skills</a>
+      <a href="#projects" class="nav-link">Projects</a>
+      <a href="#experience" class="nav-link">Experience</a>
+      <a href="#contact" class="nav-link">Contact</a>
+      <button onclick="openQRModal()" class="mag-btn" style="padding:0.6rem 1.5rem; font-size:0.75rem;">
+        <i class="fas fa-qrcode"></i>
+        <span>QR Code</span>
+      </button>
+    </div>
+    <button class="mobile-nav" onclick="toggleMobileMenu()" style="background:none;border:none;color:var(--fg);font-size:1.5rem;">
+      <i class="fas fa-bars" id="menuIcon"></i>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#about" onclick="toggleMobileMenu()">About</a>
+  <a href="#skills" onclick="toggleMobileMenu()">Skills</a>
+  <a href="#projects" onclick="toggleMobileMenu()">Projects</a>
+  <a href="#experience" onclick="toggleMobileMenu()">Experience</a>
+  <a href="#contact" onclick="toggleMobileMenu()">Contact</a>
+  <button onclick="openQRModal();toggleMobileMenu();" class="mag-btn" style="margin-top:1rem;">
+    <i class="fas fa-qrcode"></i><span>Get QR Code</span>
+  </button>
+</div>
+
+<!-- ==================== HERO SECTION ==================== -->
+<section id="hero" class="flex items-center justify-center relative">
+  <div class="max-w-6xl mx-auto w-full">
+    <div class="mb-6 reveal">
+      <div class="float-badge">
+        <span style="width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block;"></span>
+        Open to opportunities
+      </div>
+    </div>
+    <h1 class="hero-title mb-8">
+      <span class="line"><span>Hi, I'm</span></span>
+      <span class="line"><span class="gradient-text" id="heroName">Noreen Fatima</span></span>
+      <span class="line"><span style="font-weight:200;color:var(--fg-muted);font-size:0.6em;" class="typed-text" id="typedText"></span></span>
+    </h1>
+    <p class="text-lg md:text-xl max-w-2xl mb-10 reveal reveal-delay-2" style="color:var(--fg-muted);line-height:1.7;">
+      AI-focused final-year BSIT student with hands-on experience in deploying machine learning applications. Building intelligent systems that bridge the gap between AI research and real-world impact.
+    </p>
+    <div class="flex flex-wrap gap-4 reveal reveal-delay-3">
+      <a href="#projects" class="mag-btn">
+        <span>View My Work</span>
+        <i class="fas fa-arrow-right"></i>
+      </a>
+      <a href="#contact" class="mag-btn mag-btn-outline">
+        <span>Let's Talk</span>
+        <i class="fas fa-paper-plane"></i>
+      </a>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <span style="font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--fg-muted);">Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ==================== MARQUEE ==================== -->
+<div style="overflow:hidden;padding:2rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);position:relative;z-index:2;">
+  <div class="marquee-track">
+    <span class="marquee-item">AI/ML Engineer</span>
+    <span class="marquee-item" style="color:rgba(0,230,138,0.1);">&bull;</span>
+    <span class="marquee-item">Data Science</span>
+    <span class="marquee-item" style="color:rgba(0,230,138,0.1);">&bull;</span>
+    <span class="marquee-item">LLM & RAG</span>
+    <span class="marquee-item" style="color:rgba(0,230,138,0.1);">&bull;</span>
+    <span class="marquee-item">IoT Developer</span>
+    <span class="marquee-item" style="color:rgba(0,230,138,0.1);">&bull;</span>
+    <span class="marquee-item">Python Enthusiast</span>
+    <span class="marquee-item" style="color:rgba(0,230,138,0.1);">&bull;</span>
+    <span class="marquee-item">AI/ML Engineer</span>
+    <span class="marquee-item" style="color:rgba(0,230,138,0.1);">&bull;</span>
+    <span class="marquee-item">Data Science</span>
+    <span class="marquee-item" style="color:rgba(0,230,138,0.1);">&bull;</span>
+    <span class="marquee-item">LLM & RAG</span>
+    <span class="marquee-item" style="color:rgba(0,230,138,0.1);">&bull;</span>
+    <span class="marquee-item">IoT Developer</span>
+    <span class="marquee-item" style="color:rgba(0,230,138,0.1);">&bull;</span>
+    <span class="marquee-item">Python Enthusiast</span>
+  </div>
+</div>
+
+<!-- ==================== ABOUT SECTION ==================== -->
+<section id="about" class="flex items-center">
+  <div class="max-w-6xl mx-auto w-full">
+    <div class="grid md:grid-cols-2 gap-16 items-center">
+      <div>
+        <div class="section-label reveal">About Me</div>
+        <h2 class="section-title mt-4 mb-6 reveal reveal-delay-1">Passionate about building <span class="gradient-text">intelligent</span> AI systems</h2>
+        <p class="mb-6 reveal reveal-delay-2" style="color:var(--fg-muted);line-height:1.8;">
+          I am a final-year BSIT student at the University of Sargodha with strong expertise in programming and AI-based systems. My core focus lies in building intelligent applications, embedded systems, and real-time problem-solving solutions.
+        </p>
+        <p class="mb-8 reveal reveal-delay-3" style="color:var(--fg-muted);line-height:1.8;">
+          I have hands-on experience in Python, C++, C, and MATLAB, along with developing AI assistants and working on real-world projects during my internship at DevelopersHub. Currently developing an LLM-based system using Retrieval-Augmented Generation (RAG) for my final year project. I continuously explore cutting-edge technologies to enhance my technical depth.
+        </p>
+        <div class="flex flex-wrap gap-3 reveal reveal-delay-4">
+          <div class="hex-item"><i class="fas fa-map-marker-alt" style="color:var(--accent);margin-right:0.4rem;"></i>Sargodha, Pakistan</div>
+          <div class="hex-item"><i class="fas fa-graduation-cap" style="color:var(--accent);margin-right:0.4rem;"></i>BSIT — GPA 3.54/4.0</div>
+          <div class="hex-item"><i class="fas fa-language" style="color:var(--accent);margin-right:0.4rem;"></i>Urdu, English</div>
+        </div>
+      </div>
+      <div class="reveal reveal-delay-2">
+        <div class="glass-card tilt-card p-8" style="position:relative;">
+          <div style="position:absolute;top:-1px;left:-1px;right:-1px;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent-alt),#ff6b35);border-radius:20px 20px 0 0;"></div>
+          <div class="grid grid-cols-2 gap-6">
+            <div class="text-center">
+              <div class="stat-number" data-target="8">0</div>
+              <div style="color:var(--fg-muted);font-size:0.8rem;text-transform:uppercase;letter-spacing:0.1em;margin-top:0.25rem;">Projects Built</div>
+            </div>
+            <div class="text-center">
+              <div class="stat-number" data-target="6">0</div>
+              <div style="color:var(--fg-muted);font-size:0.8rem;text-transform:uppercase;letter-spacing:0.1em;margin-top:0.25rem;">AI Deployments</div>
+            </div>
+            <div class="text-center">
+              <div class="stat-decimal" id="gpaCounter">0.00</div>
+              <div style="color:var(--fg-muted);font-size:0.8rem;text-transform:uppercase;letter-spacing:0.1em;margin-top:0.25rem;">CGPA</div>
+            </div>
+            <div class="text-center">
+              <div class="stat-number" data-target="2">0</div>
+              <div style="color:var(--fg-muted);font-size:0.8rem;text-transform:uppercase;letter-spacing:0.1em;margin-top:0.25rem;">Achievements</div>
+            </div>
+          </div>
+          <!-- GPA Ring -->
+          <div class="flex justify-center mt-6">
+            <div class="gpa-ring">
+              <svg width="120" height="120" viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="8"/>
+                <circle cx="60" cy="60" r="52" fill="none" stroke="url(#gpaGrad)" stroke-width="8"
+                  stroke-dasharray="326.73" stroke-dashoffset="326.73" stroke-linecap="round" id="gpaCircle"/>
+                <defs>
+                  <linearGradient id="gpaGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#00e68a"/>
+                    <stop offset="100%" style="stop-color:#00b8d4"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div class="gpa-ring-text">
+                <span style="font-family:'Outfit',sans-serif;font-weight:800;font-size:1.4rem;color:var(--accent);">88.5%</span>
+                <span style="font-size:0.6rem;color:var(--fg-muted);text-transform:uppercase;letter-spacing:0.1em;">Score</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SKILLS SECTION ==================== -->
+<section id="skills">
+  <div class="max-w-6xl mx-auto w-full">
+    <div class="text-center mb-16">
+      <div class="section-label justify-center reveal">My Toolkit</div>
+      <h2 class="section-title mt-4 reveal reveal-delay-1">Skills & Technologies</h2>
+    </div>
+
+    <!-- Skill Categories -->
+    <div class="grid md:grid-cols-3 gap-6 mb-16">
+      <!-- Programming -->
+      <div class="glass-card tilt-card p-6 reveal">
+        <div style="width:50px;height:50px;border-radius:14px;background:rgba(0,230,138,0.1);display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;">
+          <i class="fas fa-code" style="color:var(--accent);font-size:1.2rem;"></i>
+        </div>
+        <h3 style="font-family:'Outfit',sans-serif;font-weight:700;font-size:1.2rem;margin-bottom:0.5rem;">Programming</h3>
+        <p style="color:var(--fg-muted);font-size:0.85rem;line-height:1.7;margin-bottom:1.25rem;">Core programming languages and problem-solving expertise.</p>
+        <div class="space-y-3">
+          <div>
+            <div class="flex justify-between mb-1"><span style="font-size:0.8rem;">Python</span><span style="font-size:0.8rem;color:var(--accent);">92%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" data-width="92"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between mb-1"><span style="font-size:0.8rem;">C++</span><span style="font-size:0.8rem;color:var(--accent);">88%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" data-width="88"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between mb-1"><span style="font-size:0.8rem;">C</span><span style="font-size:0.8rem;color:var(--accent);">85%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" data-width="85"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between mb-1"><span style="font-size:0.8rem;">MATLAB</span><span style="font-size:0.8rem;color:var(--accent);">82%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" data-width="82"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI/ML & Data Science -->
+      <div class="glass-card tilt-card p-6 reveal reveal-delay-1">
+        <div style="width:50px;height:50px;border-radius:14px;background:rgba(0,184,212,0.1);display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;">
+          <i class="fas fa-brain" style="color:var(--accent-alt);font-size:1.2rem;"></i>
+        </div>
+        <h3 style="font-family:'Outfit',sans-serif;font-weight:700;font-size:1.2rem;margin-bottom:0.5rem;">AI/ML & Data Science</h3>
+        <p style="color:var(--fg-muted);font-size:0.85rem;line-height:1.7;margin-bottom:1.25rem;">Artificial Intelligence, Machine Learning, and data-driven solutions.</p>
+        <div class="space-y-3">
+          <div>
+            <div class="flex justify-between mb-1"><span style="font-size:0.8rem;">LLMs & RAG</span><span style="font-size:0.8rem;color:var(--accent);">85%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" data-width="85"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between mb-1"><span style="font-size:0.8rem;">Pandas / NumPy</span><span style="font-size:0.8rem;color:var(--accent);">88%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" data-width="88"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between mb-1"><span style="font-size:0.8rem;">Data Preprocessing</span><span style="font-size:0.8rem;color:var(--accent);">86%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" data-width="86"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between mb-1"><span style="font-size:0.8rem;">NLP (Basics)</span><span style="font-size:0.8rem;color:var(--accent);">72%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" data-width="72"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tools & Platforms -->
+      <div class="glass-card tilt-card p-6 reveal reveal-delay-2">
+        <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,107,53,0.1);display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;">
+          <i class="fas fa-tools" style="color:#ff6b35;font-size:1.2rem;"></i>
+        </div>
+        <h3 style="font-family:'Outfit',sans-serif;font-weight:700;font-size:1.2rem;margin-bottom:0.5rem;">Tools & Platforms</h3>
+        <p style="color:var(--fg-muted);font-size:0.85rem;line-height:1.7;margin-bottom:1.25rem;">Development environments, deployment platforms, and databases.</p>
+        <div class="space-y-3">
+          <div>
+            <div class="flex justify-between mb-1"><span style="font-size:0.8rem;">Hugging Face</span><span style="font-size:0.8rem;color:var(--accent);">90%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" data-width="90"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between mb-1"><span style="font-size:0.8rem;">Gradio / Streamlit</span><span style="font-size:0.8rem;color:var(--accent);">85%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" data-width="85"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between mb-1"><span style="font-size:0.8rem;">Git / GitHub</span><span style="font-size:0.8rem;color:var(--accent);">80%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" data-width="80"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between mb-1"><span style="font-size:0.8rem;">MySQL / Edge Impulse</span><span style="font-size:0.8rem;color:var(--accent);">75%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" data-width="75"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Soft Skills -->
+    <div class="glass-card p-6 mb-12 reveal">
+      <h3 style="font-family:'Outfit',sans-serif;font-weight:700;font-size:1.1rem;margin-bottom:1rem;">
+        <i class="fas fa-users" style="color:var(--accent);margin-right:0.5rem;"></i>Soft Skills
+      </h3>
+      <div class="flex flex-wrap gap-3">
+        <div class="hex-item"><i class="fas fa-lightbulb" style="color:var(--accent);margin-right:0.4rem;"></i>Problem Solving</div>
+        <div class="hex-item"><i class="fas fa-chart-line" style="color:var(--accent-alt);margin-right:0.4rem;"></i>Analytical Thinking</div>
+        <div class="hex-item"><i class="fas fa-book-reader" style="color:#ff6b35;margin-right:0.4rem;"></i>Self-Learning</div>
+        <div class="hex-item"><i class="fas fa-comments" style="color:var(--accent);margin-right:0.4rem;"></i>Communication</div>
+        <div class="hex-item"><i class="fas fa-handshake" style="color:var(--accent-alt);margin-right:0.4rem;"></i>Team Collaboration</div>
+      </div>
+    </div>
+
+    <!-- Tech Tags -->
+    <div class="hex-grid reveal">
+      <span class="hex-item">Python</span>
+      <span class="hex-item">C++</span>
+      <span class="hex-item">C</span>
+      <span class="hex-item">MATLAB</span>
+      <span class="hex-item">Machine Learning</span>
+      <span class="hex-item">NLP</span>
+      <span class="hex-item">LLMs</span>
+      <span class="hex-item">RAG</span>
+      <span class="hex-item">Hugging Face</span>
+      <span class="hex-item">Gradio</span>
+      <span class="hex-item">Streamlit</span>
+      <span class="hex-item">Pandas</span>
+      <span class="hex-item">NumPy</span>
+      <span class="hex-item">Edge Impulse</span>
+      <span class="hex-item">Embedded ML</span>
+      <span class="hex-item">Git</span>
+      <span class="hex-item">GitHub</span>
+      <span class="hex-item">VS Code</span>
+      <span class="hex-item">Jupyter Notebook</span>
+      <span class="hex-item">MySQL</span>
+      <span class="hex-item">HTML</span>
+      <span class="hex-item">CSS</span>
+      <span class="hex-item">JavaScript</span>
+      <span class="hex-item">Object Detection</span>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== PROJECTS SECTION ==================== -->
+<section id="projects">
+  <div class="max-w-6xl mx-auto w-full">
+    <div class="text-center mb-10">
+      <div class="section-label justify-center reveal">Selected Work</div>
+      <h2 class="section-title mt-4 reveal reveal-delay-1">Featured Projects</h2>
+    </div>
+
+    <!-- Filter Buttons -->
+    <div class="flex flex-wrap gap-3 justify-center mb-12 reveal reveal-delay-2">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="ai">AI / ML</button>
+      <button class="filter-btn" data-filter="iot">IoT</button>
+      <button class="filter-btn" data-filter="web">Web Apps</button>
+    </div>
+
+    <!-- Projects Grid -->
+    <div class="grid md:grid-cols-2 gap-8" id="projectsGrid">
+
+      <!-- Project 1: MedAISunnah FYP -->
+      <div class="project-card reveal" data-category="ai">
+        <div style="position:relative;overflow:hidden;">
+          <img src="https://picsum.photos/seed/medai-sunnah/800/480.jpg" alt="MedAISunnah" class="project-img" loading="lazy">
+          <div class="project-overlay">
+            <div class="flex gap-3">
+              <span class="mag-btn" style="padding:0.5rem 1.2rem;font-size:0.7rem;cursor:default;">
+                <i class="fas fa-star"></i><span>Final Year Project</span>
+              </span>
+            </div>
+          </div>
+          <div style="position:absolute;top:1rem;left:1rem;z-index:2;">
+            <span style="font-size:0.65rem;color:var(--bg);background:var(--accent);padding:0.25rem 0.75rem;border-radius:100px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">FYP</span>
+          </div>
+        </div>
+        <div class="p-6">
+          <div class="flex items-center gap-2 mb-2">
+            <span style="font-size:0.7rem;color:var(--accent);font-family:'JetBrains Mono',monospace;background:rgba(0,230,138,0.1);padding:0.2rem 0.6rem;border-radius:4px;">AI / LLM</span>
+            <span style="font-size:0.7rem;color:var(--accent-alt);font-family:'JetBrains Mono',monospace;background:rgba(0,184,212,0.1);padding:0.2rem 0.6rem;border-radius:4px;">RAG</span>
+          </div>
+          <h3 style="font-family:'Outfit',sans-serif;font-weight:700;font-size:1.3rem;margin-bottom:0.5rem;">MedAISunnah — AI Medical Advisory System</h3>
+          <p style="color:var(--fg-muted);font-size:0.85rem;line-height:1.7;margin-bottom:1rem;">AI-powered medical advisory system using LLMs and Retrieval-Augmented Generation (RAG) to provide domain-specific guidance based on Tibb-e-Nabawi. Focused on semantic search, knowledge retrieval, and intelligent response generation.</p>
+          <div class="flex flex-wrap gap-2">
+            <span style="font-size:0.7rem;color:var(--fg-muted);background:var(--card);padding:0.2rem 0.6rem;border-radius:4px;border:1px solid var(--border);">Python</span>
+            <span style="font-size:0.7rem;color:var(--fg-muted);background:var(--card);padding:0.2rem 0.6rem;border-radius:4px;border:1px solid var(--border);">LLMs</span>
+            <span style="font-size:0.7rem;color:var(--fg-muted);background:var(--card);padding:0.2rem 0.6rem;border-radius:4px;border:1px solid var(--border);">RAG</span>
+            <span style="font-size:0.7rem;color:var(--fg-muted);background:var(--card);padding:0.2rem 0.6rem;border-radius:4px;border:1px solid var(--border);">Hugging Face</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Project 2: RAG PDF QA -->
+      <div class="project-card reveal reveal-delay-1" data-category="ai">
+        <div style="position:relative;overflow:hidden;">
+          <img src="https://picsum.photos/seed/rag-pdf-qa/800/480.jpg" alt="RAG PDF QA" class="project-img" loading="lazy">
+          <div class="project-overlay">
+            <div class="flex gap-3">
+              <a href="https://huggingface.co/spaces" target="_blank" rel="noopener" class="mag-btn" style="padding:0.5rem 1.2rem;font-size:0.7rem;"><span>Live Demo</span><i class="fas fa-external-link-alt"></i></a>
+            </div>
+          </div>
+          <div style="position:absolute;top:1rem;left:1rem;z-index:2;">
+            <span style="font-size:0.65rem;color:var(--bg);background:var(--accent-alt);padding:0.25rem 0.75rem;border-radius:100px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Deployed</span>
+          </div>
+        </div>
+        <div class="p-6">
+          <div class="flex items-center gap-2 mb-2">
+            <span style="font-size:0.7rem;color:var(--accent-alt);font-family:'JetBrains Mono',monospace;background:rgba(0,184,212,0.1);padding:0.2rem 0.6rem;border-radius:4px;">AI / Web</span>
+          </div>
+          <h3 style="font-family:'Outfit',sans-serif;font-weight:700;font-size:1.3rem;margin-bottom:0.5rem;">RAG-Based PDF Question Answering System</h3>
+          <p style="color:var(--fg-muted);font-size:0.85rem;line-height:1.7;margin-bottom:1rem;">Upload any PDF document and ask questions. The system uses Retrieval-Augmented Generation to find relevant passages and generate accurate, context-aware answers in real-time.</p>
+          <div class="flex flex-wrap gap-2">
+            <span style="font-size:0.7rem;color:var(--fg-muted);background:var(--card);padding:0.2rem 0.6rem;border-radius:4px;border:1px solid var(--border);">Python</span>
+            <span style="font-size:0.7rem;color:var(--fg-muted);background:var(--card);padding:0.2rem 0.6rem;border-radius:4px;border:1px solid var(--border);">RAG</span>
+            <span style="font-size:0.7rem;color:var(--fg-muted);background:var(--card);padding:0.2rem 0.6rem;border-radius:4px;border:1px solid var(--border);">Gradio</span>
+            <span style="font-size:0.7rem;color:var(--fg-muted);background:var(--card);padding:0.2rem 0.6rem;border-radius:4px;border:1px solid var(--border);">Hugging Face</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Project 3: Voice-to-Voice AI -->
+      <div class="project-card reveal" data-category="ai">
+        <div style="position:relative;overflow:hidden;">
+          <img src="https://picsum.photos/seed/voice-ai-app/800/480.jpg" alt="Voice to Voice AI" class="project-img" loading="lazy">
+          <div class="project-overlay">
+            <div class="flex gap-3">
+              <a href="https://huggingface.co/spaces" target="_blank" rel="noopener" class="mag-btn" style="padding:0.5rem 1.2rem;font-size:0.7rem;"><span>Live Demo</span><i class="fas fa-external-link-alt"></i></a>
+            </div>
+          </div>
+          <div style="position:absolute;top:1rem;left:1rem;z-index:2;">
+            <span style="font-size:0.65rem;color:var(--bg);background:var(--accent-alt);padding:0.25rem 0.75rem;border-radius:100px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Deployed</span>
+          </div>
+        </div>
+        <div class="p-6">
+          <div class="flex items-center gap-2 mb-2">
+            <span style="font-size:0.7rem;color:var(--accent);font-family:'JetBrains Mono',monospace;background:rgba(0,230,138,0.1);padding:0.2rem 0.6rem;border-radius:4px;">AI / Voice</span>
+          </div>
+          <h3 style="font-family:'Outfit',sans-serif;font-weight:700;font-size:1.3rem;margin-bottom:0.5rem;">Voice-to-Voice AI Application</h3>
+          <p style="color:var(--fg-muted);font-size:0.85rem;line-height:1.7;margin-bottom:1rem;">A real-time voice interaction application that processes spoken input, generates intelligent responses, and outputs them as speech — enabling natural, conversational AI experiences.</p>
+          <div class="flex flex-wrap gap-2">
+            <span style="font-size:0.7rem;color:var(--fg-muted);background:var(--card);padding:0.2rem 0.6rem;border-radius:4px;border:1px solid var(--border);">Python</span>
+            <span style="font-size:0.7rem;color:var(--fg-muted);background:var(--card);padding:0.2rem 0.6rem;border-radius:4px;border:1px solid var(--border);">Speech-to-Text</span>
+            <span style="font-size:0.7rem;color:var(--fg-muted);background:var(--card);padding:0.2rem 0.6rem;border-radius:4px;border:1px solid var(--border);">Streamlit</span>
+            <span style="font-size:0.7rem;color:var(--fg-muted);background:var(--card);padding:0.2rem 0.6rem;border-radius:4px;border:1px solid var(--border);">Hugging Face</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Project 4: IoT Clap Detector -->
+      <div class="project-card reveal reveal-delay-1" data-category="iot">
+        <div style="position:relative;overflow:hidden;">
+          <img src="https://picsum.photos/seed/iot-clap-detect/800/480.jpg" alt="IoT Clap Detector" class="project-img" loading="lazy">
+          <div class="project-overlay">
+            <div class="flex gap-3">
+              <a href="https://www.edgeimpulse.com/" target="_blank" rel="noopener" class="mag-btn" style="padding:0.5rem 1.2rem;font-size:0.7rem;"><span>View on Edge Impulse</span><i class="fas fa-external-link-alt"></i></a>
+            </div>
+          </div>
+          <div style="position:absolute;top:1rem;left:1rem;z-index:2;">
+            <span style="font-size:0.65rem;color:var(--bg);background:#ff6b35;padding:0.25rem 0.75rem;border-radius:100px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">IoT</span>
+          </div>
+        </div>
+        <div class="p-6">
+          <div class="flex items-center gap-2 mb-2">
+            <span style="font-size:0.7rem;color:#ff6b35;font-family:'JetBrains Mono',monospace;background:rgba(255,107,53,0.1);padding:0.2rem 0.6rem;border-radius:4px;">IoT / Embedded ML</span>
+          </div>
+          <h3 style="font-family:'Outfit',sans-serif;font-weight:700;font-size:1.3rem;margin-bottom:0.5rem;">IoT Clap Detector</h3>
+          <p style="color:var(--fg-muted);font-size:0.85rem;line-height:1.7;margin-bottom:1rem;">An embedded machine learning application deployed on Edge Impulse that detects and classifies clap sounds in real-time using audio sensor data, demonstrating edge AI capabilities.</p>
+          <div class="flex flex-wrap gap-2">
+            <span style="font-size:0.7rem;color:var(--fg-muted);background:var(--card);padding:0.2rem 0.6rem;border-radius:4px;border:1px solid var(--border);">Edge Impulse</span>
+            <span style="font-size:0.7rem;color:var(--fg-muted);background:var(--card);padding:0.2rem 0.6rem;border-radius:4px;border:1px solid var(--border);">Embedded ML</span>
+            <span style="font-size:0.7rem;color:var(--fg-muted);background:var(--card);padding:0.2rem 0.6rem;border-radius:4px;border:1px solid var(--border);">Audio Processing</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Project 5: Eng-to-Urdu Translator -->
+      <div class="project-card reveal" data-category="ai">
+        <div style="position:relative;overflow:hidden;">
+          <img src="https://picsum.photos/seed/eng-urdu-trans/800/480.jpg" alt="English to Urdu Translator" class="project-img" loading="lazy">
+          <div class="project-overlay">
+            <div class="flex gap-3">
+              <a href="https://huggingface.co/spaces" target="_blank" rel="noopener" class="mag-btn" style="padding:0.5rem 1.2rem;font-size:0.7rem;"><span>Live Demo</span><i class="fas fa-external-link-alt"></i></a>
+            </div>
+          </div>
+          <div style="position:absolute;top:1rem;left:1rem;z-index:2;">
+            <span style="font-size:0.65rem;color:var(--bg);background:var(--accent-alt);padding:0.25rem 0.75rem;border-radius:100px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Deployed</span>
+          </div>
+        </div>
+        <div class="p-6">
+          <div class="flex items-center gap-2 mb-2">
+            <span style="font-size:0.7rem;color:var(--accent-alt);font-family:'JetBrains Mono',monospace;background:rgba(0,184,212,0.1);padding:0.2rem 0.6rem;border-radius:4px;">NLP / Translation</span>
+          </div>
+          <h3 style="font-family:'Outfit',sans-serif;font-weight:700;font-size:1.3rem;margin-bottom:0.5rem;">English-to-Urdu Translator</h3>
+          <p style="color:var(--fg-muted);font-size:0.85rem;line-height:1.7;margin-bottom:1rem;">A deployed AI application that translates English text to Urdu in real-time, leveraging Hugging Face translation models with a clean Gradio interface for seamless user interaction.</p>
+          <div class="flex flex-wrap gap-2">
+            <span style="font-size:0.7rem;color:var(--fg-muted);background:var(--card);padding:0.2rem 0.6rem;border-radius:4px;border:1px solid var(--border);">Python</span>
+            <span style="font-size:0.7rem;color:var(--fg-muted);background:var(--card);padding:0.2rem 0.6rem;border-radius:4px;border:1px solid var(--border);">NLP</span>
+            <span style="font-size:0.7rem;color:var(--fg-muted);background:var(--card);padding:0.2rem 0.6rem;border-radius:4px;border:1px solid var(--border);">Gradio</span>
+            <span style="font-size:0.7rem;color:var(--fg-muted);background:var(--card);padding:0.2rem 0.6rem;border-radius:4px;border:1px solid var(--border);">Hugging Face</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Project 6: IoT Object Detection -->
+      <div class="project-card reveal reveal-delay-1" data-category="iot">
+        <div style="position:relative;overflow:hidden;">
+          <img src="https://picsum.photos/seed/iot-object-det/800/480.jpg" alt="IoT Object Detection" class="project-img" loading="lazy">
+          <div class="project-overlay">
+            <div class="flex gap-3">
+              <a href="https://www.edgeimpulse.com/" target="_blank" rel="noopener" class="mag-btn" style="padding:0.5rem 1.2rem;font-size:0.7rem;"><span>View on Edge Impulse</span><i class="fas fa-external-link-alt"></i></a>
+            </div>
+          </div>
+          <div style="position:absolute;top:1rem;left:1rem;z-index:2;">
+            <span style="font-size:0.65rem;color:var(--bg);background:#ff6b35;padding:0.25rem 0.75rem;border-radius:100px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">IoT</span>
+          </div>
+        </div>
+        <div class="p-6">
+          <div class="flex items-center gap-2 mb-2">
+            <span style="font-size:0.7rem;color:#ff6b35;font-family:'JetBrains Mono',monospace;background:rgba(255,107,53,0.1);padding:0.2rem 0.6rem;border-radius:4px;">IoT / Computer Vision</span>
+          </div>
+          <h3 style="font-family:'Outfit',sans-serif;font-weight:700;font-size:1.3rem;margin-bottom:0.5rem;">IoT Object Detection System</h3>
+          <p style="color:var(--fg-muted);font-size:0.85rem;line-height:1.7;margin-bottom:1rem;">Real-time object detection system deployed on edge devices using Edge Impulse. Trained custom models to recognize and classify objects from camera feeds with low-latency inference.</p>
+          <div class="flex flex-wrap gap-2">
+            <span style="font-size:0.7rem;color:var(--fg-muted);background:var(--card);padding:0.2rem 0.6rem;border-radius:4px;border:1px solid var(--border);">Edge Impulse</span>
+            <span style="font-size:0.7rem;color:var(--fg-muted);background:var(--card);padding:0.2rem 0.6rem;border-radius:4px;border:1px solid var(--border);">Object Detection</span>
+            <span style="font-size:0.7rem;color:var(--fg-muted);background:var(--card);padding:0.2rem 0.6rem;border-radius:4px;border:1px solid var(--border);">Embedded ML</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Additional Deployed Projects -->
+    <div class="mt-12 reveal">
+      <h3 style="font-family:'Outfit',sans-serif;font-weight:700;font-size:1.2rem;margin-bottom:1rem;text-align:center;">
+        <i class="fas fa-rocket" style="color:var(--accent);margin-right:0.5rem;"></i>Additional Deployed AI Applications
+      </h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="glass-card p-5 text-center">
+          <i class="fas fa-road" style="color:var(--accent);font-size:1.5rem;margin-bottom:0.75rem;display:block;"></i>
+          <h4 style="font-family:'Outfit',sans-serif;font-weight:600;font-size:0.95rem;margin-bottom:0.25rem;">AI Roadmap Generator</h4>
+          <p style="color:var(--fg-muted);font-size:0.75rem;">Generates personalized learning roadmaps for AI/ML aspirants</p>
+        </div>
+        <div class="glass-card p-5 text-center">
+          <i class="fas fa-lock" style="color:var(--accent-alt);font-size:1.5rem;margin-bottom:0.75rem;display:block;"></i>
+          <h4 style="font-family:'Outfit',sans-serif;font-weight:600;font-size:0.95rem;margin-bottom:0.25rem;">Password Strength Checker</h4>
+          <p style="color:var(--fg-muted);font-size:0.75rem;">AI-powered password analysis and security recommendations</p>
+        </div>
+        <div class="glass-card p-5 text-center">
+          <i class="fas fa-solar-panel" style="color:#ff6b35;font-size:1.5rem;margin-bottom:0.75rem;display:block;"></i>
+          <h4 style="font-family:'Outfit',sans-serif;font-weight:600;font-size:0.95rem;margin-bottom:0.25rem;">Solar Plates Cost Prediction</h4>
+          <p style="color:var(--fg-muted);font-size:0.75rem;">ML model predicting solar panel installation costs based on parameters</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== EXPERIENCE & EDUCATION SECTION ==================== -->
+<section id="experience">
+  <div class="max-w-6xl mx-auto w-full">
+    <div class="grid md:grid-cols-2 gap-16">
+
+      <!-- EXPERIENCE -->
+      <div>
+        <div class="section-label reveal">Career Path</div>
+        <h2 class="section-title mt-4 mb-10 reveal reveal-delay-1">Experience</h2>
+
+        <div style="position:relative;padding-left:50px;">
+          <div class="timeline-line"></div>
+
+          <!-- Internship -->
+          <div class="mb-10 reveal reveal-delay-1" style="position:relative;">
+            <div class="timeline-dot"></div>
+            <div class="glass-card p-5">
+              <div style="font-size:0.7rem;color:var(--accent);font-family:'JetBrains Mono',monospace;margin-bottom:0.5rem;">Dec 2024 — Feb 2025</div>
+              <h3 style="font-family:'Outfit',sans-serif;font-weight:700;font-size:1.1rem;margin-bottom:0.25rem;">Data Science Intern</h3>
+              <div style="color:var(--fg-muted);font-size:0.85rem;margin-bottom:0.75rem;">
+                DevelopersHub.co
+                <a href="https://developerhub.co" target="_blank" rel="noopener" style="color:var(--accent);margin-left:0.5rem;text-decoration:none;font-size:0.75rem;"><i class="fas fa-external-link-alt"></i></a>
+              </div>
+              <ul style="color:var(--fg-muted);font-size:0.8rem;line-height:1.8;list-style:none;padding:0;">
+                <li style="margin-bottom:0.35rem;"><span style="color:var(--accent);margin-right:0.5rem;">&#9656;</span>Performed data analysis and preprocessing on structured datasets</li>
+                <li style="margin-bottom:0.35rem;"><span style="color:var(--accent);margin-right:0.5rem;">&#9656;</span>Assisted in generating insights and reports for decision-making</li>
+                <li style="margin-bottom:0.35rem;"><span style="color:var(--accent);margin-right:0.5rem;">&#9656;</span>Worked with Python-based tools for data handling and analysis</li>
+                <li><span style="color:var(--accent);margin-right:0.5rem;">&#9656;</span>Collaborated with team members on real-world data science tasks</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Academic Projects -->
+          <div class="reveal reveal-delay-2" style="position:relative;">
+            <div class="timeline-dot" style="background:var(--accent-alt);"></div>
+            <div class="glass-card p-5">
+              <div style="font-size:0.7rem;color:var(--accent-alt);font-family:'JetBrains Mono',monospace;margin-bottom:0.5rem;">2023 — Present</div>
+              <h3 style="font-family:'Outfit',sans-serif;font-weight:700;font-size:1.1rem;margin-bottom:0.25rem;">Academic & Personal Projects</h3>
+              <div style="color:var(--fg-muted);font-size:0.85rem;margin-bottom:0.75rem;">BSIT Journey — University of Sargodha</div>
+              <p style="color:var(--fg-muted);font-size:0.8rem;line-height:1.7;">
+                Developed multiple AI and IoT projects including LLM-based systems, RAG applications, voice-to-voice AI, and embedded ML systems. Deployed 6+ applications on Hugging Face Spaces and Edge Impulse, demonstrating end-to-end ML pipeline capabilities.
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- EDUCATION -->
+      <div>
+        <div class="section-label reveal">Education</div>
+        <h2 class="section-title mt-4 mb-10 reveal reveal-delay-1">Learning Journey</h2>
+
+        <div class="space-y-6">
+
+          <!-- BSIT -->
+          <div class="glass-card p-6 reveal reveal-delay-1">
+            <div class="flex items-start gap-4">
+              <div style="width:50px;height:50px;border-radius:14px;background:rgba(0,230,138,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <i class="fas fa-university" style="color:var(--accent);"></i>
+              </div>
+              <div>
+                <h3 style="font-family:'Outfit',sans-serif;font-weight:700;font-size:1rem;">BS Information Technology</h3>
+                <div style="color:var(--fg-muted);font-size:0.85rem;">University of Sargodha — Expected Graduation: 2026</div>
+                <div style="display:flex;align-items:center;gap:0.75rem;margin-top:0.5rem;">
+                  <span style="font-size:0.8rem;color:var(--accent);font-family:'JetBrains Mono',monospace;background:rgba(0,230,138,0.1);padding:0.2rem 0.6rem;border-radius:4px;">GPA: 3.54 / 4.0</span>
+                  <span style="font-size:0.8rem;color:var(--fg-muted);font-family:'JetBrains Mono',monospace;background:var(--card);padding:0.2rem 0.6rem;border-radius:4px;border:1px solid var(--border);">Computer Science</span>
+                </div>
+                <p style="color:var(--fg-muted);font-size:0.8rem;line-height:1.7;margin-top:0.5rem;">Focused on AI/ML, software engineering, data science, and embedded systems. Active in the Techive Society as a moderator for the AI & Data Science group.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Intermediate -->
+          <div class="glass-card p-6 reveal reveal-delay-2">
+            <div class="flex items-start gap-4">
+              <div style="width:50px;height:50px;border-radius:14px;background:rgba(0,184,212,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <i class="fas fa-book" style="color:var(--accent-alt);"></i>
+              </div>
+              <div>
+                <h3 style="font-family:'Outfit',sans-serif;font-weight:700;font-size:1rem;">Intermediate in Computer Science (ICS)</h3>
+                <div style="color:var(--fg-muted);font-size:0.85rem;">Reader Group of Colleges — Completed: 2022</div>
+                <div style="display:flex;align-items:center;gap:0.75rem;margin-top:0.5rem;">
+                  <span style="font-size:0.8rem;color:var(--accent-alt);font-family:'JetBrains Mono',monospace;background:rgba(0,184,212,0.1);padding:0.2rem 0.6rem;border-radius:4px;">1034 / 1100</span>
+                  <span style="font-size:0.8rem;color:var(--fg-muted);font-family:'JetBrains Mono',monospace;background:var(--card);padding:0.2rem 0.6rem;border-radius:4px;border:1px solid var(--border);">Computer Science</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Matriculation -->
+          <div class="glass-card p-6 reveal reveal-delay-3">
+            <div class="flex items-start gap-4">
+              <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,107,53,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <i class="fas fa-school" style="color:#ff6b35;"></i>
+              </div>
+              <div>
+                <h3 style="font-family:'Outfit',sans-serif;font-weight:700;font-size:1rem;">Matriculation (SSC)</h3>
+                <div style="color:var(--fg-muted);font-size:0.85rem;">The Educators PPHS, Sargodha — Completed: 2020</div>
+                <div style="display:flex;align-items:center;gap:0.75rem;margin-top:0.5rem;">
+                  <span style="font-size:0.8rem;color:#ff6b35;font-family:'JetBrains Mono',monospace;background:rgba(255,107,53,0.1);padding:0.2rem 0.6rem;border-radius:4px;">932 / 1100</span>
+                  <span style="font-size:0.8rem;color:var(--fg-muted);font-family:'JetBrains Mono',monospace;background:var(--card);padding:0.2rem 0.6rem;border-radius:4px;border:1px solid var(--border);">Biology</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ==================== ACHIEVEMENTS SECTION ==================== -->
+<section style="background:var(--bg-secondary);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+  <div class="max-w-6xl mx-auto w-full">
+    <div class="text-center mb-12">
+      <div class="section-label justify-center reveal">Recognition</div>
+      <h2 class="section-title mt-4 reveal reveal-delay-1">Achievements & Activities</h2>
+    </div>
+    <div class="grid md:grid-cols-2 gap-6">
+      <div class="achievement-card reveal">
+        <div class="flex items-start gap-4">
+          <div style="width:60px;height:60px;border-radius:16px;background:linear-gradient(135deg,rgba(0,230,138,0.15),rgba(0,184,212,0.15));display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <i class="fas fa-trophy" style="color:var(--accent);font-size:1.4rem;"></i>
+          </div>
+          <div>
+            <h3 style="font-family:'Outfit',sans-serif;font-weight:700;font-size:1.1rem;margin-bottom:0.25rem;">Winner — Mobile App Development Competition</h3>
+            <div style="color:var(--accent);font-size:0.8rem;font-family:'JetBrains Mono',monospace;margin-bottom:0.5rem;">University of Lahore, 2025</div>
+            <p style="color:var(--fg-muted);font-size:0.85rem;line-height:1.7;">Won first place in a competitive mobile app development event, demonstrating practical coding skills, creativity, and the ability to deliver a complete application under time constraints.</p>
+          </div>
+        </div>
+      </div>
+      <div class="achievement-card reveal reveal-delay-1">
+        <div class="flex items-start gap-4">
+          <div style="width:60px;height:60px;border-radius:16px;background:linear-gradient(135deg,rgba(0,184,212,0.15),rgba(255,107,53,0.15));display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <i class="fas fa-user-tie" style="color:var(--accent-alt);font-size:1.4rem;"></i>
+          </div>
+          <div>
+            <h3 style="font-family:'Outfit',sans-serif;font-weight:700;font-size:1.1rem;margin-bottom:0.25rem;">Moderator — AI & Data Science Group</h3>
+            <div style="color:var(--accent-alt);font-size:0.8rem;font-family:'JetBrains Mono',monospace;margin-bottom:0.5rem;">Techive Society, University of Sargodha, 2023–2024</div>
+            <p style="color:var(--fg-muted);font-size:0.85rem;line-height:1.7;">Led the AI & Data Science group within the Techive Society, organizing sessions, facilitating peer learning, and fostering a community of students passionate about artificial intelligence.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hugging Face Portfolio Callout -->
+    <div class="glass-card p-8 mt-10 reveal" style="text-align:center;border-color:rgba(0,230,138,0.15);">
+      <div style="width:70px;height:70px;border-radius:20px;background:rgba(255,213,0,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;">
+        <span style="font-size:2rem;">🤗</span>
+      </div>
+      <h3 style="font-family:'Outfit',sans-serif;font-weight:700;font-size:1.3rem;margin-bottom:0.5rem;">Hugging Face Portfolio</h3>
+      <p style="color:var(--fg-muted);font-size:0.85rem;max-width:500px;margin:0 auto 1.5rem;line-height:1.7;">
+        Explore all my deployed AI applications, spaces, and models on Hugging Face — 6+ live applications with real-time interaction.
+      </p>
+      <a href="https://huggingface.co/" target="_blank" rel="noopener" class="mag-btn" style="display:inline-flex;">
+        <span>View Hugging Face Profile</span>
+        <i class="fas fa-external-link-alt"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== CONTACT SECTION ==================== -->
+<section id="contact">
+  <div class="max-w-6xl mx-auto w-full">
+    <div class="grid md:grid-cols-2 gap-16">
+
+      <div>
+        <div class="section-label reveal">Get In Touch</div>
+        <h2 class="section-title mt-4 mb-6 reveal reveal-delay-1">
+          Let's build something <span class="gradient-text">intelligent</span>
+        </h2>
+
+        <p class="mb-10 reveal reveal-delay-2" style="color:var(--fg-muted);line-height:1.8;">
+          I am open to internships, entry-level roles, and AI/Software-based projects. Whether you need help with machine learning applications, data analysis, or have an interesting opportunity — I'd love to hear from you.
+        </p>
+
+        <div class="space-y-6 reveal reveal-delay-3">
+          <div class="flex items-center gap-4">
+            <div style="width:50px;height:50px;border-radius:14px;background:rgba(0,230,138,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <i class="fas fa-envelope" style="color:var(--accent);"></i>
+            </div>
+            <div>
+              <div style="font-size:0.75rem;color:var(--fg-muted);text-transform:uppercase;letter-spacing:0.1em;">Email</div>
+              <a href="mailto:noreen.fatima.rgc@gmail.com" style="font-weight:500;color:var(--fg);text-decoration:none;transition:color 0.3s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--fg)'">noreen.fatima.rgc@gmail.com</a>
+            </div>
+          </div>
+          <div class="flex items-center gap-4">
+            <div style="width:50px;height:50px;border-radius:14px;background:rgba(0,184,212,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <i class="fas fa-phone" style="color:var(--accent-alt);"></i>
+            </div>
+            <div>
+              <div style="font-size:0.75rem;color:var(--fg-muted);text-transform:uppercase;letter-spacing:0.1em;">Phone</div>
+              <a href="tel:+923267746073" style="font-weight:500;color:var(--fg);text-decoration:none;transition:color 0.3s;" onmouseover="this.style.color='var(--accent-alt)'" onmouseout="this.style.color='var(--fg)'">0326-7746073</a>
+            </div>
+          </div>
+          <div class="flex items-center gap-4">
+            <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,107,53,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <i class="fas fa-map-marker-alt" style="color:#ff6b35;"></i>
+            </div>
+            <div>
+              <div style="font-size:0.75rem;color:var(--fg-muted);text-transform:uppercase;letter-spacing:0.1em;">Location</div>
+              <div style="font-weight:500;">Sargodha, Punjab, Pakistan</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex gap-4 mt-10 reveal reveal-delay-4">
+          <a href="https://github.com/NoreenFatima6700" target="_blank" rel="noopener" style="width:44px;height:44px;border-radius:12px;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--fg-muted);transition:all 0.3s;text-decoration:none;" onmouseover="this.style.background='rgba(0,230,138,0.1)';this.style.borderColor='rgba(0,230,138,0.3)';this.style.color='var(--accent)'" onmouseout="this.style.background='var(--card)';this.style.borderColor='var(--border)';this.style.color='var(--fg-muted)'"><i class="fab fa-github"></i></a>
+          <a href="https://www.linkedin.com/in/noreenfatima6700/" target="_blank" rel="noopener" style="width:44px;height:44px;border-radius:12px;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--fg-muted);transition:all 0.3s;text-decoration:none;" onmouseover="this.style.background='rgba(0,230,138,0.1)';this.style.borderColor='rgba(0,230,138,0.3)';this.style.color='var(--accent)'" onmouseout="this.style.background='var(--card)';this.style.borderColor='var(--border)';this.style.color='var(--fg-muted)'"><i class="fab fa-linkedin-in"></i></a>
+          <a href="mailto:noreen.fatima.rgc@gmail.com" style="width:44px;height:44px;border-radius:12px;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--fg-muted);transition:all 0.3s;text-decoration:none;" onmouseover="this.style.background='rgba(0,230,138,0.1)';this.style.borderColor='rgba(0,230,138,0.3)';this.style.color='var(--accent)'" onmouseout="this.style.background='var(--card)';this.style.borderColor='var(--border)';this.style.color='var(--fg-muted)'"><i class="fas fa-envelope"></i></a>
+          <a href="https://huggingface.co/" target="_blank" rel="noopener" style="width:44px;height:44px;border-radius:12px;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--fg-muted);transition:all 0.3s;text-decoration:none;font-size:1.1rem;" onmouseover="this.style.background='rgba(255,213,0,0.1)';this.style.borderColor='rgba(255,213,0,0.3)';this.style.color='#ffd500'" onmouseout="this.style.background='var(--card)';this.style.borderColor='var(--border)';this.style.color='var(--fg-muted)'">🤗</a>
+        </div>
+      </div>
+
+      <!-- FORM -->
+      <div class="reveal reveal-delay-2">
+        <form id="contactForm" class="glass-card p-8" style="position:relative;">
+          <div style="position:absolute;top:-1px;left:-1px;right:-1px;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent-alt),#ff6b35);border-radius:20px 20px 0 0;"></div>
+          <div class="space-y-5">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label style="font-size:0.75rem;color:var(--fg-muted);text-transform:uppercase;letter-spacing:0.1em;display:block;margin-bottom:0.5rem;">Name</label>
+                <input type="text" class="form-input" placeholder="Your Name" required id="formName">
+              </div>
+              <div>
+                <label style="font-size:0.75rem;color:var(--fg-muted);text-transform:uppercase;letter-spacing:0.1em;display:block;margin-bottom:0.5rem;">Email</label>
+                <input type="email" class="form-input" placeholder="your@email.com" required id="formEmail">
+              </div>
+            </div>
+            <div>
+              <label style="font-size:0.75rem;color:var(--fg-muted);text-transform:uppercase;letter-spacing:0.1em;display:block;margin-bottom:0.5rem;">Subject</label>
+              <input type="text" class="form-input" placeholder="Project Inquiry / Opportunity" required id="formSubject">
+            </div>
+            <div>
+              <label style="font-size:0.75rem;color:var(--fg-muted);text-transform:uppercase;letter-spacing:0.1em;display:block;margin-bottom:0.5rem;">Message</label>
+              <textarea class="form-input" rows="5" placeholder="Tell me about your project or opportunity..." required id="formMessage" style="resize:vertical;min-height:120px;"></textarea>
+            </div>
+            <button type="submit" class="mag-btn w-full justify-center">
+              <span>Send Message</span>
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ==================== FOOTER ==================== -->
+<footer style="border-top:1px solid var(--border);padding:2rem;position:relative;z-index:2;">
+  <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+    <div style="color:var(--fg-muted);font-size:0.8rem;">
+      Designed & Built by <span style="color:var(--accent);font-weight:600;">Noreen Fatima</span> — 2025
+    </div>
+    <div style="color:var(--fg-muted);font-size:0.8rem;font-family:'JetBrains Mono',monospace;">
+      Department of Computer Science & Information Technology
+    </div>
+    <div style="color:var(--fg-muted);font-size:0.8rem;">
+      Made with <span style="color:var(--accent);">&hearts;</span> and Python
+    </div>
+  </div>
+</footer>
+
+<!-- ==================== QR CODE MODAL ==================== -->
+<div class="modal-overlay" id="qrModal">
+  <div class="modal-content">
+    <button onclick="closeQRModal()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--fg-muted);font-size:1.2rem;transition:color 0.3s;" onmouseover="this.style.color='var(--fg)'" onmouseout="this.style.color='var(--fg-muted)'"><i class="fas fa-times"></i></button>
+    <div style="width:60px;height:60px;border-radius:16px;background:rgba(0,230,138,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;">
+      <i class="fas fa-qrcode" style="color:var(--accent);font-size:1.5rem;"></i>
+    </div>
+    <h3 style="font-family:'Outfit',sans-serif;font-weight:700;font-size:1.4rem;margin-bottom:0.25rem;">Noreen Fatima</h3>
+    <p style="color:var(--fg-muted);font-size:0.8rem;margin-bottom:1rem;">AI/ML Engineer Portfolio</p>
+    <p style="color:var(--fg-muted);font-size:0.85rem;margin-bottom:1.5rem;">Scan to visit this portfolio on your device</p>
+    <div style="background:white;padding:1rem;border-radius:16px;display:inline-block;margin-bottom:1rem;">
+      <img id="qrImage" src="" alt="QR Code" style="width:200px;height:200px;display:block;">
+    </div>
+    <div style="color:var(--fg-muted);font-size:0.7rem;font-family:'JetBrains Mono',monospace;word-break:break-all;" id="qrUrl"></div>
+    <button onclick="downloadQR()" class="mag-btn mt-4" style="padding:0.6rem 1.5rem;font-size:0.8rem;">
+      <i class="fas fa-download"></i>
+      <span>Download QR</span>
+    </button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ==================== CONFIGURATION ====================
+const CONFIG = {
+  name: "Noreen Fatima",
+  roles: [
+    "Aspiring AI/ML Engineer",
+    "Data Science Enthusiast",
+    "LLM & RAG Developer",
+    "IoT & Embedded ML Builder",
+    "Python Developer",
+    "BSIT Final Year Student"
+  ],
+  email: "noreen.fatima.rgc@gmail.com",
+  location: "Sargodha, Pakistan",
+  portfolioUrl: window.location.href,
+  gpa: 3.54,
+  gpaMax: 4.0
+};
+
+// ==================== PARTICLE SYSTEM ====================
+const canvas = document.getElementById('particle-canvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+let mouseX = 0, mouseY = 0;
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+class Particle {
+  constructor() {
+    this.reset();
+  }
+  reset() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+    this.size = Math.random() * 2 + 0.5;
+    this.speedX = (Math.random() - 0.5) * 0.3;
+    this.speedY = (Math.random() - 0.5) * 0.3;
+    this.opacity = Math.random() * 0.5 + 0.1;
+  }
+  update() {
+    this.x += this.speedX;
+    this.y += this.speedY;
+    const dx = this.x - mouseX;
+    const dy = this.y - mouseY;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist < 120) {
+      const force = (120 - dist) / 120;
+      this.x += (dx / dist) * force * 2;
+      this.y += (dy / dist) * force * 2;
+    }
+    if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
+      this.reset();
+    }
+  }
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, Math.max(0.1, this.size), 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(0, 230, 138, ${this.opacity})`;
+    ctx.fill();
+  }
+}
+
+for (let i = 0; i < 80; i++) {
+  particles.push(new Particle());
+}
+
+function drawConnections() {
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 150) {
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.strokeStyle = `rgba(0, 230, 138, ${0.05 * (1 - dist / 150)})`;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
+    }
+  }
+}
+
+function animateParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => { p.update(); p.draw(); });
+  drawConnections();
+  requestAnimationFrame(animateParticles);
+}
+animateParticles();
+
+// ==================== CUSTOM CURSOR ====================
+const cursorDot = document.getElementById('cursorDot');
+const cursorRing = document.getElementById('cursorRing');
+let cursorX = 0, cursorY = 0;
+let ringX = 0, ringY = 0;
+
+document.addEventListener('mousemove', (e) => {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+  cursorX = e.clientX;
+  cursorY = e.clientY;
+  cursorDot.style.left = cursorX - 4 + 'px';
+  cursorDot.style.top = cursorY - 4 + 'px';
+});
+
+function animateCursor() {
+  ringX += (cursorX - ringX) * 0.15;
+  ringY += (cursorY - ringY) * 0.15;
+  cursorRing.style.left = ringX - 20 + 'px';
+  cursorRing.style.top = ringY - 20 + 'px';
+  requestAnimationFrame(animateCursor);
+}
+animateCursor();
+
+document.querySelectorAll('a, button, .glass-card, .project-card, .hex-item, .filter-btn, .form-input, .achievement-card').forEach(el => {
+  el.addEventListener('mouseenter', () => cursorRing.classList.add('hover'));
+  el.addEventListener('mouseleave', () => cursorRing.classList.remove('hover'));
+});
+
+// ==================== TYPING EFFECT ====================
+const typedEl = document.getElementById('typedText');
+let roleIndex = 0, charIndex = 0, isDeleting = false;
+
+function typeEffect() {
+  const currentRole = CONFIG.roles[roleIndex];
+  if (isDeleting) {
+    typedEl.textContent = currentRole.substring(0, charIndex - 1);
+    charIndex--;
+  } else {
+    typedEl.textContent = currentRole.substring(0, charIndex + 1);
+    charIndex++;
+  }
+  let speed = isDeleting ? 30 : 60;
+  if (!isDeleting && charIndex === currentRole.length) {
+    speed = 2000;
+    isDeleting = true;
+  } else if (isDeleting && charIndex === 0) {
+    isDeleting = false;
+    roleIndex = (roleIndex + 1) % CONFIG.roles.length;
+    speed = 500;
+  }
+  setTimeout(typeEffect, speed);
+}
+typeEffect();
+
+// ==================== SCROLL REVEAL ====================
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      entry.target.querySelectorAll('.skill-bar-fill').forEach(bar => {
+        bar.style.width = bar.dataset.width + '%';
+      });
+      entry.target.querySelectorAll('.stat-number[data-target]').forEach(counter => {
+        animateCounter(counter);
+      });
+      // Animate GPA ring
+      if (entry.target.querySelector('#gpaCircle')) {
+        animateGPA();
+      }
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ==================== COUNTER ANIMATION ====================
+function animateCounter(el) {
+  if (el.dataset.animated) return;
+  el.dataset.animated = 'true';
+  const target = parseInt(el.dataset.target);
+  const duration = 2000;
+  const startTime = performance.now();
+  function update(currentTime) {
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.round(target * eased) + '+';
+    if (progress < 1) requestAnimationFrame(update);
+  }
+  requestAnimationFrame(update);
+}
+
+// ==================== GPA ANIMATION ====================
+function animateGPA() {
+  const gpaEl = document.getElementById('gpaCounter');
+  const circleEl = document.getElementById('gpaCircle');
+  if (gpaEl.dataset.animated) return;
+  gpaEl.dataset.animated = 'true';
+
+  const targetGPA = CONFIG.gpa;
+  const maxGPA = CONFIG.gpaMax;
+  const duration = 2000;
+  const startTime = performance.now();
+  const circumference = 2 * Math.PI * 52; // r=52
+
+  function update(currentTime) {
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const currentGPA = (targetGPA * eased).toFixed(2);
+    gpaEl.textContent = currentGPA;
+
+    // Animate circle
+    const percent = (targetGPA / maxGPA) * eased;
+    const offset = circumference - (percent * circumference);
+    circleEl.style.strokeDashoffset = offset;
+
+    if (progress < 1) requestAnimationFrame(update);
+  }
+  requestAnimationFrame(update);
+}
+
+// ==================== NAVBAR SCROLL ====================
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 50) {
+    navbar.classList.add('scrolled');
+  } else {
+    navbar.classList.remove('scrolled');
+  }
+  const sections = document.querySelectorAll('section[id]');
+  let current = '';
+  sections.forEach(section => {
+    const sectionTop = section.offsetTop - 200;
+    if (window.scrollY >= sectionTop) current = section.getAttribute('id');
+  });
+  document.querySelectorAll('.nav-link').forEach(link => {
+    link.classList.remove('active');
+    if (link.getAttribute('href') === '#' + current) link.classList.add('active');
+  });
+});
+
+// ==================== MOBILE MENU ====================
+function toggleMobileMenu() {
+  const menu = document.getElementById('mobileMenu');
+  const icon = document.getElementById('menuIcon');
+  menu.classList.toggle('active');
+  icon.className = menu.classList.contains('active') ? 'fas fa-times' : 'fas fa-bars';
+}
+
+// ==================== 3D TILT EFFECT ====================
+document.querySelectorAll('.tilt-card').forEach(card => {
+  card.addEventListener('mousemove', (e) => {
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateX = (y - centerY) / centerY * -8;
+    const rotateY = (x - centerX) / centerX * 8;
+    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-5px)`;
+    card.style.setProperty('--mouse-x', x + 'px');
+    card.style.setProperty('--mouse-y', y + 'px');
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)';
+  });
+});
+
+// ==================== PROJECT FILTER ====================
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const filter = btn.dataset.filter;
+    document.querySelectorAll('.project-card').forEach(card => {
+      if (filter === 'all' || card.dataset.category === filter) {
+        card.style.display = 'block';
+        setTimeout(() => { card.style.opacity = '1'; card.style.transform = 'translateY(0)'; }, 50);
+      } else {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        setTimeout(() => { card.style.display = 'none'; }, 400);
+      }
+    });
+  });
+});
+
+// ==================== CONTACT FORM ====================
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const name = document.getElementById('formName').value;
+  const email = document.getElementById('formEmail').value;
+  const subject = document.getElementById('formSubject').value;
+  const message = document.getElementById('formMessage').value;
+
+  if (!name || !email || !subject || !message) {
+    showToast('Please fill in all fields', 'error');
+    return;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    showToast('Please enter a valid email', 'error');
+    return;
+  }
+
+  // Construct mailto link as fallback
+  const mailtoLink = `mailto:${CONFIG.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`)}`;
+  window.open(mailtoLink, '_blank');
+  showToast(`Thanks ${name}! Opening your email client...`, 'success');
+  this.reset();
+});
+
+// ==================== TOAST ====================
+function showToast(message, type) {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.style.background = type === 'error' ? '#ef4444' : 'var(--accent)';
+  toast.style.color = type === 'error' ? '#fff' : 'var(--bg)';
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3500);
+}
+
+// ==================== QR CODE ====================
+function generateQR() {
+  const url = CONFIG.portfolioUrl;
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(url)}&bgcolor=ffffff&color=0a0a0f&format=png`;
+  document.getElementById('qrImage').src = qrUrl;
+  document.getElementById('qrUrl').textContent = url;
+}
+
+function openQRModal() {
+  generateQR();
+  document.getElementById('qrModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeQRModal() {
+  document.getElementById('qrModal').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('qrModal').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('qrModal')) closeQRModal();
+});
+
+function downloadQR() {
+  const img = document.getElementById('qrImage');
+  const link = document.createElement('a');
+  link.download = 'noreen-fatima-portfolio-qr.png';
+  link.href = img.src;
+  link.click();
+  showToast('QR Code downloaded successfully!', 'success');
+}
+
+// ==================== MAGNETIC BUTTONS ====================
+document.querySelectorAll('.mag-btn').forEach(btn => {
+  btn.addEventListener('mousemove', (e) => {
+    const rect = btn.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    btn.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+  });
+  btn.addEventListener('mouseleave', () => {
+    btn.style.transform = 'translate(0, 0)';
+  });
+});
+
+// ==================== KEYBOARD SUPPORT ====================
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeQRModal();
+    const menu = document.getElementById('mobileMenu');
+    if (menu.classList.contains('active')) toggleMobileMenu();
+  }
+});
+
+// ==================== SMOOTH SCROLL ====================
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function(e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+
+// Set hero name (redundancy safety)
+document.getElementById('heroName').textContent = CONFIG.name;
+</script>
 </body>
 </html>
