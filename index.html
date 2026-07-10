@@ -541,10 +541,6 @@
       <a href="#projects" class="nav-link">Projects</a>
       <a href="#experience" class="nav-link">Experience</a>
       <a href="#contact" class="nav-link">Contact</a>
-      <button onclick="openQRModal()" class="mag-btn" style="padding:0.6rem 1.5rem; font-size:0.75rem;">
-        <i class="fas fa-qrcode"></i>
-        <span>QR Code</span>
-      </button>
     </div>
     <button class="mobile-nav" onclick="toggleMobileMenu()" style="background:none;border:none;color:var(--fg);font-size:1.5rem;">
       <i class="fas fa-bars" id="menuIcon"></i>
@@ -559,9 +555,6 @@
   <a href="#projects" onclick="toggleMobileMenu()">Projects</a>
   <a href="#experience" onclick="toggleMobileMenu()">Experience</a>
   <a href="#contact" onclick="toggleMobileMenu()">Contact</a>
-  <button onclick="openQRModal();toggleMobileMenu();" class="mag-btn" style="margin-top:1rem;">
-    <i class="fas fa-qrcode"></i><span>Get QR Code</span>
-  </button>
 </div>
 
 <!-- ==================== HERO SECTION ==================== -->
@@ -579,7 +572,7 @@
       <span class="line"><span style="font-weight:200;color:var(--fg-muted);font-size:0.6em;" class="typed-text" id="typedText"></span></span>
     </h1>
     <p class="text-lg md:text-xl max-w-2xl mb-10 reveal reveal-delay-2" style="color:var(--fg-muted);line-height:1.7;">
-      AI-focused final-year BSIT student with hands-on experience in deploying machine learning applications. Building intelligent systems that bridge the gap between AI research and real-world impact.
+      Recent IT graduate with hands-on experience in deploying machine learning applications, building intelligent systems that bridge the gap between AI research and real-world impact.
     </p>
     <div class="flex flex-wrap gap-4 reveal reveal-delay-3">
       <a href="#projects" class="mag-btn">
@@ -601,25 +594,21 @@
 <!-- ==================== MARQUEE ==================== -->
 <div style="overflow:hidden;padding:2rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);position:relative;z-index:2;">
   <div class="marquee-track">
-    <span class="marquee-item">AI/ML Engineer</span>
+    <span class="marquee-item">Junior AI/ML Engineer</span>
     <span class="marquee-item" style="color:rgba(0,230,138,0.1);">&bull;</span>
     <span class="marquee-item">Data Science</span>
     <span class="marquee-item" style="color:rgba(0,230,138,0.1);">&bull;</span>
     <span class="marquee-item">LLM & RAG</span>
     <span class="marquee-item" style="color:rgba(0,230,138,0.1);">&bull;</span>
-    <span class="marquee-item">IoT Developer</span>
+    <span class="marquee-item">Python</span>
     <span class="marquee-item" style="color:rgba(0,230,138,0.1);">&bull;</span>
-    <span class="marquee-item">Python Enthusiast</span>
-    <span class="marquee-item" style="color:rgba(0,230,138,0.1);">&bull;</span>
-    <span class="marquee-item">AI/ML Engineer</span>
+    <span class="marquee-item">Junior AI/ML Engineer</span>
     <span class="marquee-item" style="color:rgba(0,230,138,0.1);">&bull;</span>
     <span class="marquee-item">Data Science</span>
     <span class="marquee-item" style="color:rgba(0,230,138,0.1);">&bull;</span>
     <span class="marquee-item">LLM & RAG</span>
     <span class="marquee-item" style="color:rgba(0,230,138,0.1);">&bull;</span>
-    <span class="marquee-item">IoT Developer</span>
-    <span class="marquee-item" style="color:rgba(0,230,138,0.1);">&bull;</span>
-    <span class="marquee-item">Python Enthusiast</span>
+    <span class="marquee-item">Python</span>
   </div>
 </div>
 
@@ -631,14 +620,14 @@
         <div class="section-label reveal">About Me</div>
         <h2 class="section-title mt-4 mb-6 reveal reveal-delay-1">Passionate about building <span class="gradient-text">intelligent</span> AI systems</h2>
         <p class="mb-6 reveal reveal-delay-2" style="color:var(--fg-muted);line-height:1.8;">
-          I am a final-year BSIT student at the University of Sargodha with strong expertise in programming and AI-based systems. My core focus lies in building intelligent applications, embedded systems, and real-time problem-solving solutions.
+          I am a fresh IT graduate from University of Sargodha with strong expertise in programming and AI-based systems. My core focus lies in building intelligent applications, embedded systems, and real-time problem-solving solutions.
         </p>
         <p class="mb-8 reveal reveal-delay-3" style="color:var(--fg-muted);line-height:1.8;">
-          I have hands-on experience in Python, C++, C, and MATLAB, along with developing AI assistants and working on real-world projects during my internship at DevelopersHub. Currently developing an LLM-based system using Retrieval-Augmented Generation (RAG) for my final year project. I continuously explore cutting-edge technologies to enhance my technical depth.
+          I have hands-on experience in Python, C++, C, and MATLAB, along with developing AI assistants and working on real-world projects during my internship at DevelopersHub. Developed MedAISunnah (App & Web Interface), an LLM-based system using Retrieval-Augmented Generation (RAG) for my final year project. I continuously explore cutting-edge technologies to enhance my technical depth.
         </p>
         <div class="flex flex-wrap gap-3 reveal reveal-delay-4">
           <div class="hex-item"><i class="fas fa-map-marker-alt" style="color:var(--accent);margin-right:0.4rem;"></i>Sargodha, Pakistan</div>
-          <div class="hex-item"><i class="fas fa-graduation-cap" style="color:var(--accent);margin-right:0.4rem;"></i>BSIT — GPA 3.54/4.0</div>
+          <div class="hex-item"><i class="fas fa-graduation-cap" style="color:var(--accent);margin-right:0.4rem;"></i>BSIT — CGPA 3.55/4.00</div>
           <div class="hex-item"><i class="fas fa-language" style="color:var(--accent);margin-right:0.4rem;"></i>Urdu, English</div>
         </div>
       </div>
@@ -1311,27 +1300,6 @@
   </div>
 </footer>
 
-<!-- ==================== QR CODE MODAL ==================== -->
-<div class="modal-overlay" id="qrModal">
-  <div class="modal-content">
-    <button onclick="closeQRModal()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--fg-muted);font-size:1.2rem;transition:color 0.3s;" onmouseover="this.style.color='var(--fg)'" onmouseout="this.style.color='var(--fg-muted)'"><i class="fas fa-times"></i></button>
-    <div style="width:60px;height:60px;border-radius:16px;background:rgba(0,230,138,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;">
-      <i class="fas fa-qrcode" style="color:var(--accent);font-size:1.5rem;"></i>
-    </div>
-    <h3 style="font-family:'Outfit',sans-serif;font-weight:700;font-size:1.4rem;margin-bottom:0.25rem;">Noreen Fatima</h3>
-    <p style="color:var(--fg-muted);font-size:0.8rem;margin-bottom:1rem;">AI/ML Engineer Portfolio</p>
-    <p style="color:var(--fg-muted);font-size:0.85rem;margin-bottom:1.5rem;">Scan to visit this portfolio on your device</p>
-    <div style="background:white;padding:1rem;border-radius:16px;display:inline-block;margin-bottom:1rem;">
-      <img id="qrImage" src="" alt="QR Code" style="width:200px;height:200px;display:block;">
-    </div>
-    <div style="color:var(--fg-muted);font-size:0.7rem;font-family:'JetBrains Mono',monospace;word-break:break-all;" id="qrUrl"></div>
-    <button onclick="downloadQR()" class="mag-btn mt-4" style="padding:0.6rem 1.5rem;font-size:0.8rem;">
-      <i class="fas fa-download"></i>
-      <span>Download QR</span>
-    </button>
-  </div>
-</div>
-
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
@@ -1340,18 +1308,18 @@
 const CONFIG = {
   name: "Noreen Fatima",
   roles: [
-    "Aspiring AI/ML Engineer",
-    "Data Science Enthusiast",
+    "Junior AI/ML Engineer",
+    "Data Science",
     "LLM & RAG Developer",
     "IoT & Embedded ML Builder",
     "Python Developer",
-    "BSIT Final Year Student"
+    "Fresh IT Graduate"
   ],
   email: "noreen.fatima.rgc@gmail.com",
   location: "Sargodha, Pakistan",
   portfolioUrl: window.location.href,
-  gpa: 3.54,
-  gpaMax: 4.0
+  gpa: 3.55,
+  gpaMax: 4.00
 };
 
 // ==================== PARTICLE SYSTEM ====================
@@ -1653,38 +1621,6 @@ function showToast(message, type) {
   toast.style.color = type === 'error' ? '#fff' : 'var(--bg)';
   toast.classList.add('show');
   setTimeout(() => toast.classList.remove('show'), 3500);
-}
-
-// ==================== QR CODE ====================
-function generateQR() {
-  const url = CONFIG.portfolioUrl;
-  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(url)}&bgcolor=ffffff&color=0a0a0f&format=png`;
-  document.getElementById('qrImage').src = qrUrl;
-  document.getElementById('qrUrl').textContent = url;
-}
-
-function openQRModal() {
-  generateQR();
-  document.getElementById('qrModal').classList.add('active');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeQRModal() {
-  document.getElementById('qrModal').classList.remove('active');
-  document.body.style.overflow = '';
-}
-
-document.getElementById('qrModal').addEventListener('click', (e) => {
-  if (e.target === document.getElementById('qrModal')) closeQRModal();
-});
-
-function downloadQR() {
-  const img = document.getElementById('qrImage');
-  const link = document.createElement('a');
-  link.download = 'noreen-fatima-portfolio-qr.png';
-  link.href = img.src;
-  link.click();
-  showToast('QR Code downloaded successfully!', 'success');
 }
 
 // ==================== MAGNETIC BUTTONS ====================
